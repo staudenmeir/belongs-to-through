@@ -10,11 +10,12 @@ First, pull in the package through Composer.
 "require": {
     "znck/belongs-to-through": "dev"
 }
+```
 
 ## Usage
 
 Within your eloquent model class add following line
 
 ```php
-	use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+use \Znck\Eloquent\Relations\BelongsToThroughTrait;
 ```
