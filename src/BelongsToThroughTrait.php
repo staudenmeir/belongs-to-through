@@ -1,7 +1,5 @@
 <?php namespace Znck\Eloquent\Relations;
 
-use Breve\Eloquent\Relations\BelongsToThrough;
-
 /**
  * This file belongs to server.
  *
