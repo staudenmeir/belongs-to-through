@@ -42,3 +42,4 @@ Class Article extends Model {
 ```
 
 Now, the magic: `$article->country`
+
