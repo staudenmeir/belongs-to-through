@@ -41,7 +41,7 @@ class BelongsToThrough extends Relation
      * @param string                                $firstKey
      * @param string                                $localKey
      */
-    function __construct(Builder $query, Model $farChild, Model $parent, $firstKey, $localKey)
+    public function __construct(Builder $query, Model $farChild, Model $parent, $firstKey, $localKey)
     {
         $this->farChild = $farChild;
         $this->firstKey = $firstKey;
