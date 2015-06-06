@@ -8,7 +8,7 @@ First, pull in the package through Composer.
 
 ```js
 "require": {
-    "znck/belongs-to-through": "dev"
+    "znck/belongs-to-through": "~0.1"
 }
 ```
 
@@ -19,3 +19,26 @@ Within your eloquent model class add following line
 ```php
 use \Znck\Eloquent\Relations\BelongsToThroughTrait;
 ```
+
+## Example: 
+Consider a blog application. In this app, a country can have many users and a user can have many articles. So, `hasManyThrough` provides easy way to access articles from a country.
+
+```php 
+class Country extends Model {
+    public function articles () {
+        return $this->hasManyThrough(Article::class, User::class);
+    }
+}
+```
+
+If we are accessing the country of the article, then we have to use `$article->user->country`.
+
+```php
+Class Article extends Model {
+    public function country() {
+        return $this->belongsToThrough(Country::class, User::class);
+    }
+}
+```
+
+Now, the magic: `$article->country`
