@@ -10,7 +10,9 @@
         "model"
     ],
     "require": {
-        "illuminate/database": ">=5.0"
+        "illuminate/database": "~5.2@dev",
+        "mockery/mockery": "~1.0@dev",
+        "phpunit/phpunit": "~5.0@dev"
     },
     "license": "MIT",
     "homepage": "https://github.com/znck/belongs-to-through",

@@ -6,7 +6,8 @@
  * Author: Rahul Kadyan, <hi@znck.me>
  * Find license in root directory of this project.
  */
-trait BelongsToThroughTrait {
+trait BelongsToThroughTrait
+{
     public function belongsToThrough($related, $through, $firstKey = null, $localKey = null)
     {
         $related = new $related;
