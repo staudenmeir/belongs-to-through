@@ -8,7 +8,7 @@ First, pull in the package through Composer.
 
 ```js
 "require": {
-    "znck/belongs-to-through": "~0.1"
+    "znck/belongs-to-through": "~1.0"
 }
 ```
 
