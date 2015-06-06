@@ -1,31 +1,33 @@
 {
-    "name": "znck/belongs-to-through",
-    "description": "Adds belongsToThrough relation to laravel models",
-    "keywords": [
-        "laravel",
-        "znck",
-        "eloquent",
-        "belongsToThrough",
-        "models",
-        "model"
-    ],
-    "require": {
-        "illuminate/database": "~5.2@dev",
-        "mockery/mockery": "~1.0@dev",
-        "phpunit/phpunit": "~5.0@dev"
-    },
-    "license": "MIT",
-    "homepage": "https://github.com/znck/belongs-to-through",
-    "authors": [
-        {
-            "name": "Rahul Kadyan",
-            "email": "hi@znck.me"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-          "Znck\\Eloquent\\Relations\\": "src/"
-        }
-    },
-    "minimum-stability": "dev"
+  "name": "znck/belongs-to-through",
+  "description": "Adds belongsToThrough relation to laravel models",
+  "keywords": [
+    "laravel",
+    "znck",
+    "eloquent",
+    "belongsToThrough",
+    "models",
+    "model"
+  ],
+  "require": {
+    "illuminate/database": ">4.0"
+  },
+  "require-dev": {
+    "mockery/mockery": ">=1.0",
+    "phpunit/phpunit": "~5.0"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/znck/belongs-to-through",
+  "authors": [
+    {
+      "name": "Rahul Kadyan",
+      "email": "hi@znck.me"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Znck\\Eloquent\\Relations\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
 }
