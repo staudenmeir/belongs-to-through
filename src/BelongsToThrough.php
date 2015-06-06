@@ -145,7 +145,7 @@ class BelongsToThrough extends Relation
         $dictionary = $this->buildDictionary($results);
 
         // Once we have the dictionary we can simply spin through the child models to
-        // link them up with their children using the keyed dictionary to make the
+        // link them up with their parent using the keyed dictionary to make the
         // matching very convenient and easy work. Then we'll just return them.
         foreach ($models as $model) {
             $key = $model->getKey();
