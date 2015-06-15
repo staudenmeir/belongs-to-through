@@ -41,7 +41,7 @@ class BelongsToThrough extends Relation
      * @param string                                $firstKey
      * @param string                                $localKey
      */
-    public function __construct(Builder $query, Model $farChild, Model $parent, $firstKey, $localKey)
+    function __construct(Builder $query, Model $farChild, Model $parent, $firstKey, $localKey)
     {
         $this->farChild = $farChild;
         $this->firstKey = $firstKey;
@@ -62,6 +62,8 @@ class BelongsToThrough extends Relation
         $localValue = $this->farChild[$this->localKey];
 
         $this->setJoin();
+
+        $this->query->addSelect([$this->related->getTable() . '.*']);
 
         if (static::$constraints) {
             $this->query->where($parentTable . '.' . $this->parent->getKeyName(), '=', $localValue);
@@ -111,7 +113,9 @@ class BelongsToThrough extends Relation
     {
         $table = $this->parent->getTable();
 
-        $this->query->whereIn($table . '.' . $this->parent->getKeyName(), $this->getKeys($models));
+        $this->query->addSelect([$this->parent->getTable() . '.' . $this->parent->getKeyName() .' as __related_through_key']);
+
+        $this->query->whereIn($table . '.' . $this->parent->getKeyName(), $this->getKeys($models, $this->localKey));
     }
 
     /**
@@ -125,7 +129,7 @@ class BelongsToThrough extends Relation
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
-            $model->setRelation($relation, $this->related->newCollection());
+            $model->setRelation($relation, $this->related);
         }
 
         return $models;
@@ -148,7 +152,7 @@ class BelongsToThrough extends Relation
         // link them up with their parent using the keyed dictionary to make the
         // matching very convenient and easy work. Then we'll just return them.
         foreach ($models as $model) {
-            $key = $model->getKey();
+            $key = $model->{$this->localKey};
 
             if (isset($dictionary[$key])) {
                 $value = $dictionary[$key];
@@ -171,13 +175,14 @@ class BelongsToThrough extends Relation
     {
         $dictionary = [];
 
-        $foreign = $this->firstKey;
+        $foreign = '__related_through_key';
 
         // First we will create a dictionary of models keyed by the foreign key of the
         // relationship as this will allow us to quickly access all of the related
         // models without having to do nested looping which will be quite slow.
         foreach ($results as $result) {
             $dictionary[$result->{$foreign}] = $result;
+            $result->offsetUnset($foreign);
         }
 
         return $dictionary;
@@ -190,6 +195,11 @@ class BelongsToThrough extends Relation
      */
     public function getResults()
     {
-        return $this->query->getModel();
+        return $this->query->first();
+    }
+
+    public function get()
+    {
+        return $this->query->get();
     }
 }
