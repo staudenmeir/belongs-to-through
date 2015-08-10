@@ -17,7 +17,10 @@ First, pull in the package through Composer.
 Within your eloquent model class add following line
 
 ```php
-use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+class User extends Model {
+    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    ...
+}
 ```
 
 ## Example: 
@@ -25,6 +28,8 @@ Consider a blog application. In this app, a country can have many users and a us
 
 ```php 
 class Country extends Model {
+    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    
     public function articles () {
         return $this->hasManyThrough(Article::class, User::class);
     }
@@ -35,6 +40,8 @@ If we are accessing the country of the article, then we have to use `$article->u
 
 ```php
 Class Article extends Model {
+    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    
     public function country() {
         return $this->belongsToThrough(Country::class, User::class);
     }
