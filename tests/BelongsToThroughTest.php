@@ -1,82 +1,84 @@
 <?php
-
-/**
- * This file belongs to belongsToThrough.
- *
- * Author: Rahul Kadyan, <hi@znck.me>
- * Find license in root directory of this project.
- */
-
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Mockery as m;
-use Znck\Eloquent\Relations\BelongsToThrough;
+use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
  * Test BelongsToThrough
  */
-class BelongsToThroughTest extends PHPUnit_Framework_TestCase
+class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 {
+
     /**
-     * Tears down the fixture, for example, close a network connection.
-     * This method is called after a test is executed.
+     * Define environment setup.
+     *
+     * @param  \Illuminate\Foundation\Application $app
+     *
+     * @return void
      */
-    public function tearDown()
+    protected function getEnvironmentSetUp($app)
     {
-        m::close();
+        // Setup default database to use sqlite :memory:
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', [
+            'driver'   => 'sqlite',
+            'database' => __DIR__ . '/database.sqlite',
+            'prefix'   => '',
+        ]);
     }
 
-    // Borrowing test cases from laravel framework
-    public function testRelationIsProperlyInitialized()
+    public function test_through_one()
     {
-        $this->assertTrue(true);
-        // TODO add tests.
+        $district = District::where('id', 1)->first();
+
+        $this->assertNotNull($district->country);
+        $this->assertEquals(1, $district->country->id);
     }
 
-    protected function getRelation()
+    public function test_through_two()
     {
-        list($builder, $country, $user, $firstKey, $localKey) = $this->getRelationArguments();
+        $city = City::where('id', 1)->first();
 
-        return new BelongsToThrough($builder, $country, $user, $firstKey, $localKey);
+        $this->assertNotNull($city->country);
+        $this->assertEquals(1, $city->country->id);
     }
 
-    protected function getRelationArguments()
-    {
-        $builder = m::mock('Illuminate\Database\Eloquent\Builder');
-        $builder->shouldReceive('join')->once()->with('users', 'countries.id', '=', 'users.country_id');
-        $builder->shouldReceive('addSelect')->with(['users.id as __related_through_key'])->with(['countries.*']);
-        $builder->shouldReceive('where')->with('users.id', '=', 1);
+    public function test_eager_loading() {
+        $cities = City::with('country')->where('id', '>', 0)->get();
 
-        $user = m::mock('ZnckModel');
-        $user->shouldReceive('getTable')->andReturn('users');
-        $user->shouldReceive('getForeignKey')->andReturn('user_id');
-        $user->shouldReceive('getKeyName')->andReturn('id');
+        $this->assertCount(16, $cities);
 
-
-        $post = m::mock('ZnckModel');
-        $post->shouldReceive('offsetGet')->with('user_id')->andReturn(1);
-
-        $country = m::mock('ZnckModel');
-        $country->shouldReceive('getQualifiedKeyName')->andReturn('countries.id');
-        $country->shouldReceive('getTable')->andReturn('countries');
-
-        $builder->shouldReceive('getModel')->andReturn($country);
-
-        return [$builder, $post, $user, 'country_id', 'user_id'];
+        foreach($cities as $city) {
+            $this->assertEquals(ceil($city->id / 8), $city->country->id);
+        }
     }
 }
 
-class EloquentBelongsToThroughModelStub extends Illuminate\Database\Eloquent\Model
+class Country extends Model
 {
-    public $country_id = 'foreign.value';
+
 }
 
-class ZnckModel extends Illuminate\Database\Eloquent\Model {
-    use Znck\Eloquent\Relations\BelongsToThroughTrait;
-}
-
-class EloquentHasManyThroughSoftDeletingModelStub extends Illuminate\Database\Eloquent\Model
+class State extends Model
 {
-    use SoftDeletes;
-    public $table = 'users';
+
+}
+
+class District extends Model
+{
+    use BelongsToThrough;
+
+    public function country()
+    {
+        return $this->belongsToThrough(Country::class, State::class);
+    }
+}
+
+class City extends Model
+{
+    use BelongsToThrough;
+
+    public function country()
+    {
+        return $this->belongsToThrough(Country::class, [State::class, District::class]);
+    }
 }

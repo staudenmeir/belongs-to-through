@@ -13,8 +13,8 @@
     "illuminate/database": ">4.0"
   },
   "require-dev": {
-    "mockery/mockery": ">=1.0",
-    "phpunit/phpunit": "~5.0"
+    "phpunit/phpunit": "~5.0",
+    "orchestra/testbench": "~3.0"
   },
   "license": "MIT",
   "homepage": "https://github.com/znck/belongs-to-through",
@@ -26,8 +26,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Znck\\Eloquent\\Relations\\": "src/"
+      "Znck\\Eloquent\\": "src/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "stable"
 }
