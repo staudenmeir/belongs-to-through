@@ -18,7 +18,7 @@ Within your eloquent model class add following line
 
 ```php
 class User extends Model {
-    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
     ...
 }
 ```
@@ -28,7 +28,7 @@ Consider a blog application. In this app, a country can have many users and a us
 
 ```php 
 class Country extends Model {
-    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
     
     public function articles () {
         return $this->hasManyThrough(Article::class, User::class);
@@ -40,7 +40,7 @@ If we are accessing the country of the article, then we have to use `$article->u
 
 ```php
 Class Article extends Model {
-    use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+    use \Znck\Eloquent\Traits\BelongsToThrough;
     
     public function country() {
         return $this->belongsToThrough(Country::class, User::class);
@@ -50,3 +50,44 @@ Class Article extends Model {
 
 Now, the magic: `$article->country`
 
+> And more deeper
+
+```php
+
+use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
+
+class Country extends Model
+{
+
+}
+
+class State extends Model
+{
+
+}
+
+class District extends Model
+{
+    use BelongsToThrough;
+
+    public function country()
+    {
+        return $this->belongsToThrough(Country::class, State::class);
+    }
+}
+
+class City extends Model
+{
+    use BelongsToThrough;
+
+    public function country()
+    {
+        return $this->belongsToThrough(Country::class, [State::class, District::class]);
+    }
+}
+
+$city = City::find(1);
+
+$city->country;
+```
