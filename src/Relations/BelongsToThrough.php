@@ -1,4 +1,6 @@
-<?php namespace Znck\Eloquent\Relations;
+<?php
+
+namespace Znck\Eloquent\Relations;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -6,9 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
- * Class BelongsToThroughDeep
- *
- * @package Znck\Eloquent\Relations
+ * Class BelongsToThroughDeep.
  */
 class BelongsToThrough extends Relation
 {
@@ -17,11 +17,11 @@ class BelongsToThrough extends Relation
      */
     const RELATED_THROUGH_KEY = '__deep_related_through_key';
     /**
-     * @type array|\Illuminate\Database\Eloquent\Model[]
+     * @var array|\Illuminate\Database\Eloquent\Model[]
      */
     protected $models;
     /**
-     * @type string|null
+     * @var string|null
      */
     protected $localKey;
 
@@ -29,9 +29,9 @@ class BelongsToThrough extends Relation
      * BelongsToThroughDeep constructor.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @param \Illuminate\Database\Eloquent\Model   $parent
      * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param string|null $localKey
+     * @param string|null                           $localKey
      */
     public function __construct(Builder $query, Model $parent, array $models, $localKey = null)
     {
@@ -50,7 +50,7 @@ class BelongsToThrough extends Relation
     {
         $this->setJoins();
 
-        $this->getQuery()->select([$this->getRelated()->getTable() . '.*']);
+        $this->getQuery()->select([$this->getRelated()->getTable().'.*']);
 
         if (static::$constraints) {
             $this->getQuery()->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
@@ -64,21 +64,21 @@ class BelongsToThrough extends Relation
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param  array $models
+     * @param array $models
      *
      * @return void
      */
     public function addEagerConstraints(array $models)
     {
-        $this->getQuery()->addSelect([$this->getParent()->getQualifiedKeyName() . ' as ' . self::RELATED_THROUGH_KEY]);
+        $this->getQuery()->addSelect([$this->getParent()->getQualifiedKeyName().' as '.self::RELATED_THROUGH_KEY]);
         $this->getQuery()->whereIn($this->getParent()->getQualifiedKeyName(), $this->getKeys($models, $this->localKey));
     }
 
     /**
      * Initialize the relation on a set of models.
      *
-     * @param  \Illuminate\Database\Eloquent\Model[] $models
-     * @param  string $relation
+     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param string                                $relation
      *
      * @return array
      */
@@ -94,9 +94,9 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param  array $models
-     * @param  \Illuminate\Database\Eloquent\Collection $results
-     * @param  string $relation
+     * @param array                                    $models
+     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param string                                   $relation
      *
      * @return array
      */
@@ -135,7 +135,7 @@ class BelongsToThrough extends Relation
         $one = $this->getRelated()->getQualifiedKeyName();
         $prev = $this->getRelated()->getForeignKey();
         foreach ($this->models as $key => $model) {
-            $other = $model->getTable() . '.' . $prev;
+            $other = $model->getTable().'.'.$prev;
             $this->getQuery()->leftJoin($model->getTable(), $one, '=', $other);
 
             $prev = $model->getForeignKey();

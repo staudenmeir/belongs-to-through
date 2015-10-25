@@ -1,17 +1,17 @@
 <?php
+
 use Illuminate\Database\Eloquent\Model;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
- * Test BelongsToThrough
+ * Test BelongsToThrough.
  */
 class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 {
-
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application $app
+     * @param \Illuminate\Foundation\Application $app
      *
      * @return void
      */
@@ -21,7 +21,7 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
-            'database' => __DIR__ . '/database.sqlite',
+            'database' => __DIR__.'/database.sqlite',
             'prefix'   => '',
         ]);
     }
@@ -42,12 +42,13 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals(1, $city->country->id);
     }
 
-    public function test_eager_loading() {
+    public function test_eager_loading()
+    {
         $cities = City::with('country')->where('id', '>', 0)->get();
 
         $this->assertCount(16, $cities);
 
-        foreach($cities as $city) {
+        foreach ($cities as $city) {
             $this->assertEquals(ceil($city->id / 8), $city->country->id);
         }
     }
@@ -55,12 +56,10 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 
 class Country extends Model
 {
-
 }
 
 class State extends Model
 {
-
 }
 
 class District extends Model
