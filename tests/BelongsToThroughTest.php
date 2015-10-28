@@ -1,18 +1,18 @@
 <?php
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Support\Str;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
- * Test BelongsToThrough
+ * Test BelongsToThrough.
  */
 class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 {
-
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application $app
+     * @param \Illuminate\Foundation\Application $app
      *
      * @return void
      */
@@ -22,11 +22,10 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
-            'database' => __DIR__ . '/database.sqlite',
+            'database' => __DIR__.'/database.sqlite',
             'prefix'   => '',
         ]);
     }
-
 
     public function test_through_one()
     {
@@ -36,7 +35,6 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertEquals(1, $district->country->id);
     }
 
-
     public function test_through_two()
     {
         $city = Stub_Test_Model_City::where('id', 1)->first();
@@ -44,7 +42,6 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertNotNull($city->country);
         $this->assertEquals(1, $city->country->id);
     }
-
 
     public function test_eager_loading()
     {
@@ -57,7 +54,8 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         }
     }
 
-    public function test_has_relation() {
+    public function test_has_relation()
+    {
         $cities_with_country = Stub_Test_Model_City::has('country')->get();
         $all_cities = Stub_Test_Model_City::all();
 
@@ -66,16 +64,20 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
     }
 }
 
-class Stub_Parent_Model extends Eloquent {
-  public function getForeignKey() {
-    return Str::singular($this->getTable()).'_id';
-  }
+class Stub_Parent_Model extends Eloquent
+{
+    public function getForeignKey()
+    {
+        return Str::singular($this->getTable()).'_id';
+    }
 }
 
-class Stub_Test_Model_Contient extends Stub_Parent_Model {
+class Stub_Test_Model_Contient extends Stub_Parent_Model
+{
     protected $table = 'continents';
 
-    public function countries() {
+    public function countries()
+    {
         return $this->hasMany(Stub_Test_Model_Country::class);
     }
 }
@@ -84,7 +86,8 @@ class Stub_Test_Model_Country extends Stub_Parent_Model
 {
     protected $table = 'countries';
 
-    public function continent() {
+    public function continent()
+    {
         return $this->belongsTo(Stub_Test_Model_Contient::class);
     }
 }
@@ -96,7 +99,6 @@ class Stub_Test_Model_State extends Stub_Parent_Model
 
 class Stub_Test_Model_District extends Stub_Parent_Model
 {
-
     use BelongsToThrough;
 
     protected $table = 'districts';
@@ -109,13 +111,12 @@ class Stub_Test_Model_District extends Stub_Parent_Model
 
 class Stub_Test_Model_City extends Stub_Parent_Model
 {
-
     use BelongsToThrough;
 
     protected $table = 'cities';
 
     public function country()
     {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class, [ Stub_Test_Model_State::class, Stub_Test_Model_District::class ]);
+        return $this->belongsToThrough(Stub_Test_Model_Country::class, [Stub_Test_Model_State::class, Stub_Test_Model_District::class]);
     }
 }
