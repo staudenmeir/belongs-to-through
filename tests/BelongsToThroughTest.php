@@ -1,6 +1,7 @@
 <?php
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Illuminate\Support\Str;
 
 /**
  * Test BelongsToThrough
@@ -26,59 +27,95 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         ]);
     }
 
+
     public function test_through_one()
     {
-        $district = District::where('id', 1)->first();
+        $district = Stub_Test_Model_District::where('id', 1)->first();
 
         $this->assertNotNull($district->country);
         $this->assertEquals(1, $district->country->id);
     }
 
+
     public function test_through_two()
     {
-        $city = City::where('id', 1)->first();
+        $city = Stub_Test_Model_City::where('id', 1)->first();
 
         $this->assertNotNull($city->country);
         $this->assertEquals(1, $city->country->id);
     }
 
-    public function test_eager_loading() {
-        $cities = City::with('country')->where('id', '>', 0)->get();
+
+    public function test_eager_loading()
+    {
+        $cities = Stub_Test_Model_City::with('country')->where('id', '<', 17)->get();
 
         $this->assertCount(16, $cities);
 
-        foreach($cities as $city) {
+        foreach ($cities as $city) {
             $this->assertEquals(ceil($city->id / 8), $city->country->id);
         }
     }
-}
 
-class Country extends Model
-{
+    public function test_has_relation() {
+        $cities_with_country = Stub_Test_Model_City::has('country')->get();
+        $all_cities = Stub_Test_Model_City::all();
 
-}
-
-class State extends Model
-{
-
-}
-
-class District extends Model
-{
-    use BelongsToThrough;
-
-    public function country()
-    {
-        return $this->belongsToThrough(Country::class, State::class);
+        $this->assertCount(16, $cities_with_country);
+        $this->assertCount(18, $all_cities);
     }
 }
 
-class City extends Model
+class Stub_Parent_Model extends Eloquent {
+  public function getForeignKey() {
+    return Str::singular($this->getTable()).'_id';
+  }
+}
+
+class Stub_Test_Model_Contient extends Stub_Parent_Model {
+    protected $table = 'continents';
+
+    public function countries() {
+        return $this->hasMany(Stub_Test_Model_Country::class);
+    }
+}
+
+class Stub_Test_Model_Country extends Stub_Parent_Model
 {
+    protected $table = 'countries';
+
+    public function continent() {
+        return $this->belongsTo(Stub_Test_Model_Contient::class);
+    }
+}
+
+class Stub_Test_Model_State extends Stub_Parent_Model
+{
+    protected $table = 'states';
+}
+
+class Stub_Test_Model_District extends Stub_Parent_Model
+{
+
     use BelongsToThrough;
+
+    protected $table = 'districts';
 
     public function country()
     {
-        return $this->belongsToThrough(Country::class, [State::class, District::class]);
+        return $this->belongsToThrough(Stub_Test_Model_Country::class, Stub_Test_Model_State::class);
+    }
+}
+
+class Stub_Test_Model_City extends Stub_Parent_Model
+{
+
+    use BelongsToThrough;
+
+    protected $table = 'cities';
+
+    public function country()
+    {
+        return $this->belongsToThrough(Stub_Test_Model_Country::class, [ Stub_Test_Model_State::class, Stub_Test_Model_District::class ]);
     }
 }

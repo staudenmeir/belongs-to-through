@@ -5,23 +5,32 @@ use Znck\Eloquent\Relations\BelongsToThrough as Relation;
 
 trait BelongsToThrough
 {
+
+    /**
+     * Define a belongs-to-through relationship.
+     *
+     * @param string  $related
+     * @param string|array  $through
+     * @param string|null  $localKey
+     *
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     */
     public function belongsToThrough($related, $through, $localKey = null)
     {
         $related = new $related;
-        if (!($related instanceof Model)) {
-            throw new \InvalidArgumentException("\$related class should be instance of \\Iluminate\\Database\\Eloquent\\Model.");
-        }
         $models = [];
         foreach ((array)$through as $key => $model) {
             $object = new $model;
             if (!($object instanceof Model)) {
-                throw new \InvalidArgumentException("\$through classes should be instance of \\Iluminate\\Database\\Eloquent\\Model.");
+                throw new \InvalidArgumentException(
+                    "Through model should be instance of \\Iluminate\\Database\\Eloquent\\Model."
+                );
             }
             $models[] = $object;
         }
 
         if (empty($through)) {
-            throw new \InvalidArgumentException("\$through should contain one or more classes.");
+            throw new \InvalidArgumentException("Provide one or more through model.");
         }
 
         $models[] = $this;

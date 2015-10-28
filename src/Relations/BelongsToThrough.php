@@ -1,37 +1,44 @@
-<?php namespace Znck\Eloquent\Relations;
+<?php
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+namespace Znck\Eloquent\Relations;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-/**
- * Class BelongsToThroughDeep
- *
- * @package Znck\Eloquent\Relations
- */
 class BelongsToThrough extends Relation
 {
     /**
+     * Column alias for matching eagerly loaded models.
      *
+     * @var string
      */
     const RELATED_THROUGH_KEY = '__deep_related_through_key';
+
     /**
-     * @type array|\Illuminate\Database\Eloquent\Model[]
+     * List of intermediate model instances.
+     *
+     * @var array
      */
     protected $models;
+
     /**
-     * @type string|null
+     * The local key on the relationship.
+     *
+     * @var string
      */
     protected $localKey;
 
     /**
-     * BelongsToThroughDeep constructor.
+     * Create a new instance of relation.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param string|null $localKey
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Model  $parent
+     * @param  array  $models
+     * @param  string|null  $localKey
+     * @return void
      */
     public function __construct(Builder $query, Model $parent, array $models, $localKey = null)
     {
@@ -50,36 +57,34 @@ class BelongsToThrough extends Relation
     {
         $this->setJoins();
 
-        $this->getQuery()->select([$this->getRelated()->getTable() . '.*']);
+        $this->getQuery()->select([$this->getRelated()->getTable().'.*']);
 
         if (static::$constraints) {
             $this->getQuery()->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
-        }
-
-        if ($this->parentSoftDeletes()) {
-            $this->setSoftDeletingConstraints();
+            $this->setSoftDeletes();
         }
     }
 
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param  array $models
-     *
+     * @param  array  $models
      * @return void
      */
     public function addEagerConstraints(array $models)
     {
-        $this->getQuery()->addSelect([$this->getParent()->getQualifiedKeyName() . ' as ' . self::RELATED_THROUGH_KEY]);
+        $this->getQuery()->addSelect([
+            $this->getParent()->getQualifiedKeyName().' as '.self::RELATED_THROUGH_KEY,
+        ]);
+
         $this->getQuery()->whereIn($this->getParent()->getQualifiedKeyName(), $this->getKeys($models, $this->localKey));
     }
 
     /**
      * Initialize the relation on a set of models.
      *
-     * @param  \Illuminate\Database\Eloquent\Model[] $models
-     * @param  string $relation
-     *
+     * @param  array $models
+     * @param  string  $relation
      * @return array
      */
     public function initRelation(array $models, $relation)
@@ -94,10 +99,9 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param  array $models
-     * @param  \Illuminate\Database\Eloquent\Collection $results
-     * @param  string $relation
-     *
+     * @param  array  $models
+     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param  string  $relation
      * @return array
      */
     public function match(array $models, Collection $results, $relation)
@@ -108,9 +112,7 @@ class BelongsToThrough extends Relation
             $key = $model->{$this->localKey};
 
             if (isset($dictionary[$key])) {
-                $val = $dictionary[$key];
-
-                $model->setRelation($relation, $val);
+                $model->setRelation($relation, $dictionary[$key]);
             }
         }
 
@@ -120,7 +122,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the results of the relationship.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getResults()
     {
@@ -128,14 +130,51 @@ class BelongsToThrough extends Relation
     }
 
     /**
+     * Add the constraints for a relationship count query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationCountQuery(Builder $query, Builder $parent)
+    {
+        $query->select(new Expression('count(*)'));
+
+        $one = $this->getRelated()->getQualifiedKeyName();
+        $prev = $this->getRelated()->getForeignKey();
+        $alias = null;
+        foreach ($this->models as $model) {
+            if ($this->getParent()->getTable() == $model->getTable()) {
+                $alias = $model->getTable().'_'.time();
+                $other = $alias.'.'.$prev;
+                $query->leftJoin(new Expression($model->getTable().' as '.$alias), $one, '=', $other);
+            } else {
+                $other = $model->getTable().'.'.$prev;
+                $query->leftJoin($model->getTable(), $one, '=', $other);
+            }
+
+            $prev = $model->getForeignKey();
+            $one = $model->getQualifiedKeyName();
+        }
+
+        $key = $this->wrap($this->getQualifiedParentKeyName());
+
+        $query->where(new Expression($alias.'.'.$this->getParent()->getKeyName()), '=', new Expression($key));
+
+        return $query;
+    }
+
+    /**
+     * Set the required joins on the relation query.
+     *
      * @return void
      */
     protected function setJoins()
     {
         $one = $this->getRelated()->getQualifiedKeyName();
         $prev = $this->getRelated()->getForeignKey();
-        foreach ($this->models as $key => $model) {
-            $other = $model->getTable() . '.' . $prev;
+        foreach ($this->models as $model) {
+            $other = $model->getTable().'.'.$prev;
             $this->getQuery()->leftJoin($model->getTable(), $one, '=', $other);
 
             $prev = $model->getForeignKey();
@@ -144,27 +183,35 @@ class BelongsToThrough extends Relation
     }
 
     /**
-     * @return bool
-     */
-    public function parentSoftDeletes()
-    {
-        return in_array('Illuminate\Database\Eloquent\SoftDeletes',
-            class_uses_recursive(get_class($this->getParent())));
-    }
-
-    /**
+     * Set the soft deleting constraints on the relation query.
+     *
      * @return void
      */
-    protected function setSoftDeletingConstraints()
+    protected function setSoftDeletes()
     {
-        $this->getQuery()->whereNull($this->getParent()->getQualifiedDeletedAtColumn());
-        // Note: Don't know if there is need to check intermediate models.
+        foreach ($this->models as $model) {
+            if ($this->hasSoftDeletes($model)) {
+                $this->getQuery()->whereNull($model->getQualifiedDeletedAtColumn());
+            }
+        }
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $results
+     * Determine whether the model uses Soft Deletes.
      *
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @return bool
+     */
+    public function hasSoftDeletes(Model $model)
+    {
+        return in_array(SoftDeletes::class, class_uses_recursive(get_class($model)));
+    }
+
+    /**
+     * Build model dictionary keyed by the relation's foreign key.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @return array
      */
     protected function buildDictionary(Collection $results)
     {
@@ -172,7 +219,7 @@ class BelongsToThrough extends Relation
 
         foreach ($results as $result) {
             $dictionary[$result->{static::RELATED_THROUGH_KEY}] = $result;
-            $result->offsetUnset(static::RELATED_THROUGH_KEY);
+            unset($result[static::RELATED_THROUGH_KEY]);
         }
 
         return $dictionary;
