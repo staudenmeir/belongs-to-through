@@ -22,8 +22,6 @@ trait BelongsToThrough
      * @param string|null  $localKey
      *
      * @return \Znck\Eloquent\Relations\BelongsToThrough
-     *
-     * @throws \Exception
      */
     public function belongsToThrough($related, $through, $localKey = null)
     {
