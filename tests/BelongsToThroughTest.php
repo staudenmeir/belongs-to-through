@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model as Eloquent;
-use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Support\Str;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
  * Test BelongsToThrough.
@@ -19,9 +19,9 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver' => 'sqlite',
+            'driver'   => 'sqlite',
             'database' => __DIR__.'/database.sqlite',
-            'prefix' => '',
+            'prefix'   => '',
         ]);
     }
 
