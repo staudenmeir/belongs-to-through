@@ -8,7 +8,7 @@ First, pull in the package through Composer.
 
 ```js
 "require": {
-    "znck/belongs-to-through": "~1.0"
+    "znck/belongs-to-through": "~2.0"
 }
 ```
 
@@ -50,3 +50,14 @@ Class Article extends Model {
 
 Now, the magic: `$article->country`
 
+Going deeper, `City` -> `District` -> `State` -> `Country`
+
+```php
+Class City extends Model {
+	use \Znck\Eloquent\Relations\BelongsToThroughTrait;
+	
+	public function country() {
+		return $this->belongsToThrough(Country::class, [State::class, District::class]);
+	}
+}
+```
