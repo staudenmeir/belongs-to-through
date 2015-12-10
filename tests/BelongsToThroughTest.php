@@ -9,6 +9,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  */
 class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 {
+
     /**
      * Define environment setup.
      *
@@ -60,10 +61,19 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertCount(16, $cities_with_country);
         $this->assertCount(18, $all_cities);
     }
+
+    public function test_prefixed_foreign_key()
+    {
+        $city = Stub_Test_Model_City::where('id', 1)->first();
+
+        $this->assertNotNull($city->otherCountry);
+        $this->assertEquals(1, $city->otherCountry->id);
+    }
 }
 
 class Stub_Parent_Model extends Eloquent
 {
+
     public function getForeignKey()
     {
         return Str::singular($this->getTable()).'_id';
@@ -72,6 +82,7 @@ class Stub_Parent_Model extends Eloquent
 
 class Stub_Test_Model_Contient extends Stub_Parent_Model
 {
+
     protected $table = 'continents';
 
     public function countries()
@@ -82,6 +93,7 @@ class Stub_Test_Model_Contient extends Stub_Parent_Model
 
 class Stub_Test_Model_Country extends Stub_Parent_Model
 {
+
     protected $table = 'countries';
 
     public function continent()
@@ -92,11 +104,13 @@ class Stub_Test_Model_Country extends Stub_Parent_Model
 
 class Stub_Test_Model_State extends Stub_Parent_Model
 {
+
     protected $table = 'states';
 }
 
 class Stub_Test_Model_District extends Stub_Parent_Model
 {
+
     use BelongsToThrough;
 
     protected $table = 'districts';
@@ -109,12 +123,20 @@ class Stub_Test_Model_District extends Stub_Parent_Model
 
 class Stub_Test_Model_City extends Stub_Parent_Model
 {
+
     use BelongsToThrough;
 
     protected $table = 'cities';
 
     public function country()
     {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class, [Stub_Test_Model_State::class, Stub_Test_Model_District::class]);
+        return $this->belongsToThrough(Stub_Test_Model_Country::class,
+            [ Stub_Test_Model_State::class, Stub_Test_Model_District::class ]);
+    }
+
+    public function otherCountry()
+    {
+        return $this->belongsToThrough(Stub_Test_Model_Country::class,
+            [ Stub_Test_Model_State::class, Stub_Test_Model_District::class ], null, 'other_');
     }
 }
