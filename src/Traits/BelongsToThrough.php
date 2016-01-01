@@ -14,16 +14,17 @@ use Znck\Eloquent\Relations\BelongsToThrough as Relation;
  */
 trait BelongsToThrough
 {
-
     /**
      * Define a belongs-to-through relationship.
      *
-     * @param string $related
+     * @param string       $related
      * @param string|array $through
-     * @param string|null $localKey Primary Key (Default: id)
-     * @param string $prefix  Foreign key prefix
-     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     * @param string|null  $localKey Primary Key (Default: id)
+     * @param string       $prefix   Foreign key prefix
+     *
      * @throws \Exception
+     *
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '')
     {

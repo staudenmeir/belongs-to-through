@@ -17,7 +17,6 @@ use Illuminate\Support\Str;
  */
 class BelongsToThrough extends Relation
 {
-
     /**
      * Column alias for matching eagerly loaded models.
      *
@@ -48,10 +47,10 @@ class BelongsToThrough extends Relation
      * Create a new instance of relation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @param array $models
-     * @param string|null $localKey
-     * @param string $prefix
+     * @param \Illuminate\Database\Eloquent\Model   $parent
+     * @param array                                 $models
+     * @param string|null                           $localKey
+     * @param string                                $prefix
      */
     public function __construct(Builder $query, Model $parent, array $models, $localKey = null, $prefix = '')
     {
@@ -69,7 +68,7 @@ class BelongsToThrough extends Relation
     {
         $this->setJoins();
 
-        $this->getQuery()->select([ $this->getRelated()->getTable().'.*' ]);
+        $this->getQuery()->select([$this->getRelated()->getTable().'.*']);
 
         if (static::$constraints) {
             $this->getQuery()->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
@@ -123,6 +122,7 @@ class BelongsToThrough extends Relation
      * Get foreign key column name for the model.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
+     *
      * @return string
      */
     protected function getForeignKey(Model $model)
@@ -134,6 +134,7 @@ class BelongsToThrough extends Relation
      * Determine whether the model uses Soft Deletes.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
+     *
      * @return bool
      */
     public function hasSoftDeletes(Model $model)
@@ -160,6 +161,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
      * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $parent
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function getRelationCountQuery(Builder $query, Builder $parent)
@@ -208,7 +210,8 @@ class BelongsToThrough extends Relation
      * Initialize the relation on a set of models.
      *
      * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param string $relation
+     * @param string                                $relation
+     *
      * @return array
      */
     public function initRelation(array $models, $relation)
@@ -223,9 +226,10 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param \Illuminate\Database\Eloquent\Model[]    $models
      * @param \Illuminate\Database\Eloquent\Collection $results
-     * @param string $relation
+     * @param string                                   $relation
+     *
      * @return array
      */
     public function match(array $models, Collection $results, $relation)
@@ -235,7 +239,7 @@ class BelongsToThrough extends Relation
         foreach ($models as $model) {
             $key = $model->{$this->localKey};
 
-            if (isset( $dictionary[$key] )) {
+            if (isset($dictionary[$key])) {
                 $model->setRelation($relation, $dictionary[$key]);
             }
         }
@@ -247,15 +251,16 @@ class BelongsToThrough extends Relation
      * Build model dictionary keyed by the relation's foreign key.
      *
      * @param \Illuminate\Database\Eloquent\Collection $results
+     *
      * @return array
      */
     protected function buildDictionary(Collection $results)
     {
-        $dictionary = [ ];
+        $dictionary = [];
 
         foreach ($results as $result) {
             $dictionary[$result->{static::RELATED_THROUGH_KEY}] = $result;
-            unset( $result[static::RELATED_THROUGH_KEY] );
+            unset($result[static::RELATED_THROUGH_KEY]);
         }
 
         return $dictionary;
