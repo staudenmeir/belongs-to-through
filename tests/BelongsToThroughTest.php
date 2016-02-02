@@ -129,7 +129,7 @@ class Stub_Test_Model_District extends Stub_Parent_Model
 
     public function countryOffshore()
     {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class, Stub_Test_Model_Offshore_State::class);
+        return $this->belongsToThrough(Stub_Test_Model_Country::class, [[Stub_Test_Model_Offshore_State::class, 'state_id']]);
     }
 }
 

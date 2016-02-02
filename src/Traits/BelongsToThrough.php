@@ -17,10 +17,10 @@ trait BelongsToThrough
     /**
      * Define a belongs-to-through relationship.
      *
-     * @param string       $related
+     * @param string $related
      * @param string|array $through
-     * @param string|null  $localKey Primary Key (Default: id)
-     * @param string       $prefix   Foreign key prefix
+     * @param string|null $localKey Primary Key (Default: id)
+     * @param string $prefix Foreign key prefix
      *
      * @throws \Exception
      *
@@ -29,17 +29,31 @@ trait BelongsToThrough
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '')
     {
         if (!$this instanceof Model) {
-            throw new Exception('belongsToThrough can used on '.Model::class.' only.');
+            throw new Exception('belongsToThrough can used on ' . Model::class . ' only.');
         }
 
         /** @var \Illuminate\Database\Eloquent\Model $relatedModel */
         $relatedModel = new $related();
         $models = [];
-        foreach ((array) $through as $key => $model) {
-            $object = new $model();
-            if (!$object instanceof Model) {
-                throw new InvalidArgumentException('Through model should be instance of '.Model::class.'.');
+        $foreignKeys = [];
+        foreach ((array)$through as $key => $model) {
+            $foreignKey = null;
+
+            if (is_array($model)) {
+                $foreignKey = $model[1];
+                $model = $model[0];
             }
+
+            $object = new $model();
+
+            if (!$object instanceof Model) {
+                throw new InvalidArgumentException('Through model should be instance of ' . Model::class . '.');
+            }
+
+            if ($foreignKey) {
+                $foreignKeys[$object->getTable()] = $foreignKey;
+            }
+
             $models[] = $object;
         }
 
@@ -49,6 +63,6 @@ trait BelongsToThrough
 
         $models[] = $this;
 
-        return new Relation($relatedModel->newQuery(), $this, $models, $localKey, $prefix);
+        return new Relation($relatedModel->newQuery(), $this, $models, $localKey, $prefix, $foreignKeys);
     }
 }
