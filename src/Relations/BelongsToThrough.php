@@ -138,7 +138,7 @@ class BelongsToThrough extends Relation
     {
         $table = $model->getTable();
 
-        if(array_key_exists($table, $this->foreignKeyLookup)) {
+        if (array_key_exists($table, $this->foreignKeyLookup)) {
             return $this->foreignKeyLookup[$table];
         }
 

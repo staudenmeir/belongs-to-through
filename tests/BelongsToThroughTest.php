@@ -165,7 +165,3 @@ class Stub_Test_Model_City extends Stub_Parent_Model
             [[Stub_Test_Model_Offshore_State::class, 'state_id'], Stub_Test_Model_District::class]);
     }
 }
-
-
-
-

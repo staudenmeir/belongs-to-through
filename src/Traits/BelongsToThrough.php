@@ -17,10 +17,10 @@ trait BelongsToThrough
     /**
      * Define a belongs-to-through relationship.
      *
-     * @param string        $related
-     * @param string|array  $through
-     * @param string|null   $localKey Primary Key (Default: id)
-     * @param string        $prefix Foreign key prefix
+     * @param string       $related
+     * @param string|array $through
+     * @param string|null  $localKey Primary Key (Default: id)
+     * @param string       $prefix   Foreign key prefix
      *
      * @throws \Exception
      *
@@ -36,7 +36,7 @@ trait BelongsToThrough
         $relatedModel = new $related();
         $models = [];
         $foreignKeys = [];
-        foreach ((array)$through as $key => $model) {
+        foreach ((array) $through as $key => $model) {
             $foreignKey = null;
 
             if (is_array($model)) {
