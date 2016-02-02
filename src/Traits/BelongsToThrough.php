@@ -35,11 +35,25 @@ trait BelongsToThrough
         /** @var \Illuminate\Database\Eloquent\Model $relatedModel */
         $relatedModel = new $related();
         $models = [];
+        $foreignKeys = [];
         foreach ((array) $through as $key => $model) {
+            $foreignKey = null;
+
+            if (is_array($model)) {
+                $foreignKey = $model[1];
+                $model = $model[0];
+            }
+
             $object = new $model();
+
             if (!$object instanceof Model) {
                 throw new InvalidArgumentException('Through model should be instance of '.Model::class.'.');
             }
+
+            if ($foreignKey) {
+                $foreignKeys[$object->getTable()] = $foreignKey;
+            }
+
             $models[] = $object;
         }
 
@@ -49,6 +63,6 @@ trait BelongsToThrough
 
         $models[] = $this;
 
-        return new Relation($relatedModel->newQuery(), $this, $models, $localKey, $prefix);
+        return new Relation($relatedModel->newQuery(), $this, $models, $localKey, $prefix, $foreignKeys);
     }
 }

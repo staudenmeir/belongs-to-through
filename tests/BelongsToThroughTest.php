@@ -68,6 +68,22 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertNotNull($city->otherCountry);
         $this->assertEquals(1, $city->otherCountry->id);
     }
+
+    public function test_custom_foreign_key()
+    {
+        $district = Stub_Test_Model_District::where('id', 1)->first();
+
+        $this->assertNotNull($district->countryOffshore);
+        $this->assertEquals(1, $district->countryOffshore->id);
+    }
+
+    public function test_custom_foreign_key_through_two()
+    {
+        $city = Stub_Test_Model_City::where('id', 1)->first();
+
+        $this->assertNotNull($city->offshoreCountry);
+        $this->assertEquals(1, $city->offshoreCountry->id);
+    }
 }
 
 class Stub_Parent_Model extends Eloquent
@@ -103,6 +119,11 @@ class Stub_Test_Model_State extends Stub_Parent_Model
     protected $table = 'states';
 }
 
+class Stub_Test_Model_Offshore_State extends Stub_Parent_Model
+{
+    protected $table = 'offshore_states';
+}
+
 class Stub_Test_Model_District extends Stub_Parent_Model
 {
     use BelongsToThrough;
@@ -112,6 +133,11 @@ class Stub_Test_Model_District extends Stub_Parent_Model
     public function country()
     {
         return $this->belongsToThrough(Stub_Test_Model_Country::class, Stub_Test_Model_State::class);
+    }
+
+    public function countryOffshore()
+    {
+        return $this->belongsToThrough(Stub_Test_Model_Country::class, [[Stub_Test_Model_Offshore_State::class, 'state_id']]);
     }
 }
 
@@ -131,5 +157,11 @@ class Stub_Test_Model_City extends Stub_Parent_Model
     {
         return $this->belongsToThrough(Stub_Test_Model_Country::class,
             [Stub_Test_Model_State::class, Stub_Test_Model_District::class], null, 'other_');
+    }
+
+    public function offshoreCountry()
+    {
+        return $this->belongsToThrough(Stub_Test_Model_Country::class,
+            [[Stub_Test_Model_Offshore_State::class, 'state_id'], Stub_Test_Model_District::class]);
     }
 }

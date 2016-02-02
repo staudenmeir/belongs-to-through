@@ -44,6 +44,13 @@ class BelongsToThrough extends Relation
     private $prefix;
 
     /**
+     * An array of table names and their foreign keys.
+     *
+     * @var array
+     */
+    private $foreignKeyLookup;
+
+    /**
      * Create a new instance of relation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -51,12 +58,14 @@ class BelongsToThrough extends Relation
      * @param array                                 $models
      * @param string|null                           $localKey
      * @param string                                $prefix
+     * @param array                                 $foreignKeyLookup
      */
-    public function __construct(Builder $query, Model $parent, array $models, $localKey = null, $prefix = '')
+    public function __construct(Builder $query, Model $parent, array $models, $localKey = null, $prefix = '', $foreignKeyLookup = [])
     {
         $this->models = $models;
         $this->localKey = $localKey ?: $parent->getKeyName();
         $this->prefix = $prefix;
+        $this->foreignKeyLookup = $foreignKeyLookup;
 
         parent::__construct($query, $parent);
     }
@@ -127,7 +136,13 @@ class BelongsToThrough extends Relation
      */
     protected function getForeignKey(Model $model)
     {
-        return Str::singular($model->getTable()).'_id';
+        $table = $model->getTable();
+
+        if (array_key_exists($table, $this->foreignKeyLookup)) {
+            return $this->foreignKeyLookup[$table];
+        }
+
+        return Str::singular($table).'_id';
     }
 
     /**
