@@ -54,11 +54,11 @@ class BelongsToThrough extends Relation
      * Create a new instance of relation.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @param array $models
-     * @param string|null $localKey
-     * @param string $prefix
-     * @param array $foreignKeyLookup
+     * @param \Illuminate\Database\Eloquent\Model   $parent
+     * @param array                                 $models
+     * @param string|null                           $localKey
+     * @param string                                $prefix
+     * @param array                                 $foreignKeyLookup
      */
     public function __construct(Builder $query, Model $parent, array $models, $localKey = null, $prefix = '', $foreignKeyLookup = [])
     {
