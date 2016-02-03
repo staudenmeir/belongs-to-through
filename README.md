@@ -61,3 +61,42 @@ Class City extends Model {
 	}
 }
 ```
+
+Sometimes you may want to use a foreign key that doesn't follow Eloquent's foreign key  conventions (i.e the singular version of the table name appended by `_id`). 
+
+Following on from the previous example, let's say we named the foreign key in the in the district table something different.
+
+```
+cities
+    id - integer
+    name - string
+    district_id - integer
+    
+districts
+    id - integer
+    name - string
+    national_state_id - integer <-- not following convention (state_id)
+
+states
+    id - integer
+    name - string
+    country_id - integer
+    
+countries
+    id - integer
+    name - string
+```
+
+As you can see the `districts` table has a `national_state_id` column as apposed to `state_id` so we need to update our relationship to account for this. 
+
+Instead of passing the reference to the model for the through relationships you can to pass an array with two elements: the model reference and the name of the foreign key. This now informs the relationship it should use a customised foreign key for this model.
+
+```php
+Class City extends Model {
+	use \Znck\Eloquent\Traits\BelongsToThrough;
+	
+	public function country() {
+		return $this->belongsToThrough(Country::class, [[State::class, 'national_state_id'], District::class]);
+	}
+}
+```
