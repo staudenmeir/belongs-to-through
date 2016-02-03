@@ -62,7 +62,7 @@ Class City extends Model {
 }
 ```
 
-Sometimes you may want to use a foreign key that doesn't follow Eloquent's foreign key  conventions (i.e the singular version of the table name appended by `_id`). 
+Sometimes you may want to use a foreign key that doesn't follow Eloquent's foreign key conventions (i.e the singular version of the table name appended by `_id`). 
 
 Following on from the previous example, let's say we named the foreign key in the in the district table something different.
 
