@@ -28,7 +28,7 @@ trait BelongsToThrough
      */
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '')
     {
-        if (!$this instanceof Model) {
+        if (! $this instanceof Model) {
             throw new Exception('belongsToThrough can used on '.Model::class.' only.');
         }
 
@@ -46,7 +46,7 @@ trait BelongsToThrough
 
             $object = new $model();
 
-            if (!$object instanceof Model) {
+            if (! $object instanceof Model) {
                 throw new InvalidArgumentException('Through model should be instance of '.Model::class.'.');
             }
 
