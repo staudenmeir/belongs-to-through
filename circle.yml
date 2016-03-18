@@ -1,0 +1,18 @@
+machine:
+  php:
+    version: 7.0.2
+
+dependencies:
+  override:
+    - mkdir -p build/logs
+    - composer install --dev --no-interaction
+#    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+
+test:
+  override:
+    - php vendor/bin/phpunit
+    - php vendor/bin/coveralls -v
+
+general:
+  artifacts:
+    - "build"

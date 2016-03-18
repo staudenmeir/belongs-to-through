@@ -1,0 +1,16 @@
+preset: recommended
+
+risky: false
+
+linting: true
+
+enabled:
+  - logical_not_operators_with_successor_space
+
+disabled:
+  - blank_line_after_opening_tag
+  - no_leading_namespace_whitespace
+
+finder:
+  name:
+    - "*.php"
