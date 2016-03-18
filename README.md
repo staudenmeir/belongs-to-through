@@ -12,7 +12,7 @@ Inverse of HasManyThrough relation is missing from [Laravel](https://laravel.com
     <img src="https://circleci.com/gh/znck/belongs-to-through.svg?style=svg" alt="Build Status" />
   </a>
   <a href="https://coveralls.io/github/znck/belongs-to-through?branch=master">
-    <img src="https://coveralls.io/repos/github/znck/plug/belongs-to-through.svg?branch=master&style=flat-square" alt="Coverage Status" />
+    <img src="https://coveralls.io/repos/github/znck/belongs-to-through/badge.svg?branch=master&style=flat-square" alt="Coverage Status" />
   </a>
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="Software License" />

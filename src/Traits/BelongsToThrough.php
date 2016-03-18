@@ -1,17 +1,10 @@
-<?php
-
-namespace Znck\Eloquent\Traits;
+<?php namespace Znck\Eloquent\Traits;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use Znck\Eloquent\Relations\BelongsToThrough as Relation;
 
-/**
- * Class BelongsToThrough.
- *
- * @author Rahul Kadyan <hi@znck.me>
- */
 trait BelongsToThrough
 {
     /**

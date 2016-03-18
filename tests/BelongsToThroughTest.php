@@ -4,9 +4,6 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Support\Str;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-/**
- * Test BelongsToThrough.
- */
 class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
 {
     /**
