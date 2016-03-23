@@ -32,5 +32,8 @@
       "Znck\\Eloquent\\": "src/"
     }
   },
+  "scripts": {
+      "test": "phpunit"
+  },
   "minimum-stability": "stable"
 }

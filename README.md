@@ -102,6 +102,33 @@ Class City extends Model {
 ```
 
 
+## Change log
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Testing
+
+``` bash
+$ composer test
+```
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
+
+## Security
+
+If you discover any security related issues, please email hi@znck.me instead of using the issue tracker.
+
+## Credits
+
+- [Rahul Kadyan][link-author]
+- [Danny Weeks](https://github.com/dannyweeks)
+- [All Contributors][link-contributors]
+
 ## License
 
-Plug is licensed under [The MIT License (MIT)](LICENSE).
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
+
+[link-author]: http://znck.me/
+[link-contributors]: ../../contributors
