@@ -2,6 +2,8 @@ Belongs-To-Through
 ==================
 Inverse of HasManyThrough relation is missing from [Laravel](https://laravel.com/)'s ORM. Belongs-To-Through extends [Eloquent](https://laravel.com/docs/master/eloquent) ORM with  belongsToThrough relation.
 
+> Eloquent is awesome but it does have some problems. Checkout [Plug](https://github.com/znck/plug)!
+
 ![Belongs-To-Through](cover.png)
 
 <p align="center">
