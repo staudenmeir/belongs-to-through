@@ -28,5 +28,9 @@ We accept contributions via Pull Requests on [Github](https://github.com/znck/be
 $ composer test
 ```
 
+``` bash
+# Fix style issues.
+$ composer cs
+```
 
 **Happy coding**!
