@@ -1,25 +1,14 @@
 # Changelog
 
-All Notable changes to `:package_name` will be documented in this file.
+All Notable changes to `belongs-to-through` will be documented in this file.
 
 > TODO: Add a changelog.
 > PRs welcome.
 
 ## [Unreleased]
 
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
-
 ### Fixed
-- Nothing
+- Eloquent `has` and `whereHas` queries are now functional.
 
-### Removed
-- Nothing
-
-### Security
-- Nothing
-
-[Unreleased]: https://github.com/znck/belongs-to-through/compare/v2.2...HEAD
+[Unreleased]: https://github.com/znck/belongs-to-through/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/znck/belongs-to-through/compare/v2.2...v2.2.1
