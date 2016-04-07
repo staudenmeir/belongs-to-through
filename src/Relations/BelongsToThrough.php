@@ -198,9 +198,9 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $parent
-     * @param  array|mixed $columns
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $parent
+     * @param array|mixed                                                              $columns
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
