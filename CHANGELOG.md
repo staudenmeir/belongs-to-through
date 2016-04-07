@@ -7,6 +7,8 @@ All Notable changes to `belongs-to-through` will be documented in this file.
 
 ## [Unreleased]
 
+## [2.2.1]
+
 ### Fixed
 - Eloquent `has` and `whereHas` queries are now functional.
 
