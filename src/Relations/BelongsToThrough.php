@@ -99,6 +99,24 @@ class BelongsToThrough extends Relation
     }
 
     /**
+     * Get foreign key column name for the model.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     *
+     * @return string
+     */
+    protected function getForeignKey(Model $model)
+    {
+        $table = $model->getTable();
+
+        if (array_key_exists($table, $this->foreignKeyLookup)) {
+            return $this->foreignKeyLookup[$table];
+        }
+
+        return Str::singular($table).'_id';
+    }
+
+    /**
      * Get the underlying query for the relation.
      *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -118,24 +136,6 @@ class BelongsToThrough extends Relation
                 $this->getQuery()->whereNull($model->getQualifiedDeletedAtColumn());
             }
         }
-    }
-
-    /**
-     * Get foreign key column name for the model.
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model
-     *
-     * @return string
-     */
-    protected function getForeignKey(Model $model)
-    {
-        $table = $model->getTable();
-
-        if (array_key_exists($table, $this->foreignKeyLookup)) {
-            return $this->foreignKeyLookup[$table];
-        }
-
-        return Str::singular($table).'_id';
     }
 
     /**
@@ -165,24 +165,17 @@ class BelongsToThrough extends Relation
     }
 
     /**
-     * Add the constraints for a relationship count query.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $parent
-     *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
+     * @param Builder $query
      */
-    public function getRelationCountQuery(Builder $query, Builder $parent)
+    protected function setRelationQueryConstraints(Builder $query)
     {
-        $query->select(new Expression('count(*)'));
-
         $one = $this->getRelated()->getQualifiedKeyName();
         $prev = $this->getForeignKey($this->getRelated());
         $alias = null;
         $lastIndex = count($this->models);
         foreach ($this->models as $index => $model) {
             if ($lastIndex === $index) {
-                $prev = $this->prefix.$prev;
+                $prev = $this->prefix.$prev; // TODO: Check if this line is really necessary. Its not covered by any of the tests.
             }
             if ($this->getParent()->getTable() == $model->getTable()) {
                 $alias = $model->getTable().'_'.time();
@@ -200,6 +193,22 @@ class BelongsToThrough extends Relation
         $key = $this->wrap($this->getQualifiedParentKeyName());
 
         $query->where(new Expression($alias.'.'.$this->getParent()->getKeyName()), '=', new Expression($key));
+    }
+
+    /**
+     * Add the constraints for a relationship query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $parent
+     * @param  array|mixed $columns
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
+    {
+        $query->select($columns);
+
+        $this->setRelationQueryConstraints($query);
 
         return $query;
     }
