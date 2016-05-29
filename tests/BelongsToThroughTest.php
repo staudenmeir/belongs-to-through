@@ -81,6 +81,13 @@ class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
         $this->assertNotNull($city->offshoreCountry);
         $this->assertEquals(1, $city->offshoreCountry->id);
     }
+
+    public function test_null_relation()
+    {
+        $district = new Stub_Test_Model_District();
+
+        $this->assertNull($district->country);
+    }
 }
 
 class Stub_Parent_Model extends Eloquent

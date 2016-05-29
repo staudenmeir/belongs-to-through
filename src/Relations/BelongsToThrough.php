@@ -74,6 +74,7 @@ class BelongsToThrough extends Relation
 
         if (static::$constraints) {
             $this->getQuery()->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
+            $this->getQuery()->whereNotNull($this->getQualifiedParentKeyName());
             $this->setSoftDeletes();
         }
     }
