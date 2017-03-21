@@ -191,7 +191,11 @@ class BelongsToThrough extends Relation
             $one = $model->getQualifiedKeyName();
         }
 
-        $key = $this->wrap($this->getQualifiedParentKeyName());
+        $key = $this->parent
+            ->newQueryWithoutScopes()
+            ->getQuery()
+            ->getGrammar()
+            ->wrap($this->getQualifiedParentKeyName());
 
         $query->where(new Expression($alias.'.'.$this->getParent()->getKeyName()), '=', new Expression($key));
     }
@@ -205,7 +209,7 @@ class BelongsToThrough extends Relation
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
+    public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
     {
         $query->select($columns);
 
