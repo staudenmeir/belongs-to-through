@@ -133,6 +133,10 @@ class BelongsToThrough extends Relation
     protected function setSoftDeletes()
     {
         foreach ($this->models as $model) {
+            if ($model === $this->parent) {
+                continue;
+            }
+
             if ($this->hasSoftDeletes($model)) {
                 $this->getQuery()->whereNull($model->getQualifiedDeletedAtColumn());
             }
