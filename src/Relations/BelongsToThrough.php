@@ -136,7 +136,6 @@ class BelongsToThrough extends Relation
             if ($model === $this->parent) {
                 continue;
             }
-
             if ($this->hasSoftDeletes($model)) {
                 $this->getQuery()->whereNull($model->getQualifiedDeletedAtColumn());
             }
