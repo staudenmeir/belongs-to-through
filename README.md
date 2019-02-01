@@ -41,7 +41,7 @@ Either [PHP](https://php.net) 5.6+ is required.
 To get the latest version of Belongs-To-Through, simply require the project using [Composer](https://getcomposer.org):
 
 ```bash
-$ composer require znck/belongs-to-through
+$ composer require staudenmeir/belongs-to-through
 ```
 
 Instead, you may of course manually update your require block and run `composer update` if you so choose:
@@ -49,7 +49,7 @@ Instead, you may of course manually update your require block and run `composer 
 ```json
 {
     "require": {
-        "znck/belongs-to-through": "^2.2"
+        "staudenmeir/belongs-to-through": "^2.2"
     }
 }
 ```
