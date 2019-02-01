@@ -1,8 +1,9 @@
-<?php namespace Znck\Eloquent\Traits;
+<?php
 
-use Exception;
+namespace Znck\Eloquent\Traits;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 use Znck\Eloquent\Relations\BelongsToThrough as Relation;
 
 trait BelongsToThrough
@@ -10,65 +11,65 @@ trait BelongsToThrough
     /**
      * Define a belongs-to-through relationship.
      *
-     * @param string       $related
-     * @param string|array $through
-     * @param string|null  $localKey         Primary Key (Default: id)
-     * @param string       $prefix           Foreign key prefix
-     * @param array        $foreignKeyLookup Foreign keys for models
-     *
-     * @throws \Exception
-     *
+     * @param  string  $related
+     * @param  array|string  $through
+     * @param  string|null  $localKey
+     * @param  string  $prefix
+     * @param  array  $foreignKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [])
     {
-        if (! $this instanceof Model) {
-            throw new Exception('belongsToThrough can used on '.Model::class.' only.');
-        }
-
-        /** @var \Illuminate\Database\Eloquent\Model $relatedModel */
-        $relatedModel = new $related();
+        /** @var \Illuminate\Database\Eloquent\Model $relatedInstance */
+        $relatedInstance = new $related;
         $models = [];
         $foreignKeys = [];
-        foreach ((array) $through as $key => $model) {
+
+        foreach ((array) $through as $model) {
             $foreignKey = null;
 
             if (is_array($model)) {
                 $foreignKey = $model[1];
+
                 $model = $model[0];
             }
 
-            $object = new $model();
-
-            if (! $object instanceof Model) {
-                throw new InvalidArgumentException('Through model should be instance of '.Model::class.'.');
-            }
+            /** @var \Illuminate\Database\Eloquent\Model $instance */
+            $instance = new $model;
 
             if ($foreignKey) {
-                $foreignKeys[$object->getTable()] = $foreignKey;
+                $foreignKeys[$instance->getTable()] = $foreignKey;
             }
 
-            $models[] = $object;
-        }
-
-        if (empty($through)) {
-            throw new InvalidArgumentException('Provide one or more through model.');
+            $models[] = $instance;
         }
 
         $models[] = $this;
 
         foreach ($foreignKeyLookup as $model => $foreignKey) {
-            $object = new $model();
-
-            if (! $object instanceof Model) {
-                throw new InvalidArgumentException('Through model should be instance of '.Model::class.'.');
-            }
+            $instance = new $model;
 
             if ($foreignKey) {
-                $foreignKeys[$object->getTable()] = $foreignKey;
+                $foreignKeys[$instance->getTable()] = $foreignKey;
             }
         }
 
-        return new Relation($relatedModel->newQuery(), $this, $models, $localKey, $prefix, $foreignKeys);
+        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $models, $localKey, $prefix, $foreignKeys);
+    }
+
+    /**
+     * Instantiate a new BelongsToThrough relationship.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Model  $parent
+     * @param  \Illuminate\Database\Eloquent\Model[]  $models
+     * @param  string  $localKey
+     * @param  string  $prefix
+     * @param  array  $foreignKeyLookup
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     */
+    protected function newBelongsToThrough(Builder $query, Model $parent, array $models, $localKey, $prefix, array $foreignKeyLookup)
+    {
+        return new Relation($query, $parent, $models, $localKey, $prefix, $foreignKeyLookup);
     }
 }
