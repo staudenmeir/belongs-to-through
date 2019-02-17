@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/znck/belongs-to-through).
+We accept contributions via Pull Requests on [Github](https://github.com/staudenmeir/belongs-to-through).
 
 
 ## Pull Requests
@@ -24,13 +24,8 @@ We accept contributions via Pull Requests on [Github](https://github.com/znck/be
 
 ## Running Tests
 
-``` bash
-$ composer test
 ```
-
-``` bash
-# Fix style issues.
-$ composer cs
+vendor/bin/phpunit
 ```
 
 **Happy coding**!
