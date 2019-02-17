@@ -17,19 +17,16 @@
         "illuminate/database": "~5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~5.0",
-        "orchestra/testbench": "~3.0",
-        "fabpot/php-cs-fixer": "^1.11",
-        "phpunit/php-code-coverage": "^3.3",
-        "satooshi/php-coveralls": "^1.0"
+        "phpunit/phpunit": "~5.0"
     },
     "autoload": {
         "psr-4": {
             "Znck\\Eloquent\\": "src/"
         }
     },
-    "scripts": {
-        "test": "phpunit",
-        "cs": "php-cs-fixer fix"
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
 }
