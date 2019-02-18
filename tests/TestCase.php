@@ -49,25 +49,27 @@ abstract class TestCase extends Base
             $table->unsignedInteger('custom_post_id')->nullable();
         });
 
-        Model::unguarded(function () {
-            Country::create(['id' => 1]);
-            Country::create(['id' => 2]);
-            Country::create(['id' => 3]);
+        Model::unguard();
 
-            User::create(['id' => 11, 'country_id' => 1, 'deleted_at' => null]);
-            User::create(['id' => 12, 'country_id' => 2, 'deleted_at' => null]);
-            User::create(['id' => 13, 'country_id' => 3, 'deleted_at' => Carbon::yesterday()]);
+        Country::create(['id' => 1]);
+        Country::create(['id' => 2]);
+        Country::create(['id' => 3]);
 
-            Post::create(['id' => 21, 'user_id' => 11, 'custom_user_id' => null]);
-            Post::create(['id' => 22, 'user_id' => 12, 'custom_user_id' => null]);
-            Post::create(['id' => 23, 'user_id' => 13, 'custom_user_id' => null]);
-            Post::create(['id' => 24, 'user_id' => null, 'custom_user_id' => 11]);
+        User::create(['id' => 11, 'country_id' => 1, 'deleted_at' => null]);
+        User::create(['id' => 12, 'country_id' => 2, 'deleted_at' => null]);
+        User::create(['id' => 13, 'country_id' => 3, 'deleted_at' => Carbon::now()->subDay()]);
 
-            Comment::create(['id' => 31, 'post_id' => 21, 'custom_post_id' => null]);
-            Comment::create(['id' => 32, 'post_id' => 22, 'custom_post_id' => null]);
-            Comment::create(['id' => 33, 'post_id' => 23, 'custom_post_id' => null]);
-            Comment::create(['id' => 34, 'post_id' => null, 'custom_post_id' => 21]);
-            Comment::create(['id' => 35, 'post_id' => null, 'custom_post_id' => 24]);
-        });
+        Post::create(['id' => 21, 'user_id' => 11, 'custom_user_id' => null]);
+        Post::create(['id' => 22, 'user_id' => 12, 'custom_user_id' => null]);
+        Post::create(['id' => 23, 'user_id' => 13, 'custom_user_id' => null]);
+        Post::create(['id' => 24, 'user_id' => null, 'custom_user_id' => 11]);
+
+        Comment::create(['id' => 31, 'post_id' => 21, 'custom_post_id' => null]);
+        Comment::create(['id' => 32, 'post_id' => 22, 'custom_post_id' => null]);
+        Comment::create(['id' => 33, 'post_id' => 23, 'custom_post_id' => null]);
+        Comment::create(['id' => 34, 'post_id' => null, 'custom_post_id' => 21]);
+        Comment::create(['id' => 35, 'post_id' => null, 'custom_post_id' => 24]);
+
+        Model::reguard();
     }
 }
