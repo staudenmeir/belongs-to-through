@@ -1,40 +1,32 @@
 {
-  "name": "staudenmeir/belongs-to-through",
-  "description": "Adds belongsToThrough relation to laravel models",
-  "keywords": [
-    "laravel",
-    "znck",
-    "eloquent",
-    "belongsToThrough",
-    "models",
-    "model"
-  ],
-  "require": {
-    "illuminate/database": "~5.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "~5.0",
-    "orchestra/testbench": "~3.0",
-    "fabpot/php-cs-fixer": "^1.11",
-    "phpunit/php-code-coverage": "^3.3",
-    "satooshi/php-coveralls": "^1.0"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/staudenmeir/belongs-to-through",
-  "authors": [
-    {
-      "name": "Rahul Kadyan",
-      "email": "hi@znck.me"
+    "name": "staudenmeir/belongs-to-through",
+    "description": "Laravel Eloquent BelongsToThrough relationship",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rahul Kadyan",
+            "email": "hi@znck.me"
+        },
+        {
+            "name": "Jonas Staudenmeir",
+            "email": "mail@jonas-staudenmeir.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.6",
+        "illuminate/database": "~5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Znck\\Eloquent\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Znck\\Eloquent\\": "src/"
-    }
-  },
-  "scripts": {
-      "test": "phpunit",
-      "cs": "php-cs-fixer fix"
-  },
-  "minimum-stability": "stable"
 }

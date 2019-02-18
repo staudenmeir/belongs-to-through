@@ -1,171 +1,67 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model as Eloquent;
-use Illuminate\Support\Str;
-use Znck\Eloquent\Traits\BelongsToThrough;
+namespace Tests;
 
-class BelongsToThroughTest extends \Orchestra\Testbench\TestCase
+use Tests\Models\Comment;
+use Tests\Models\Post;
+
+class BelongsToThroughTest extends TestCase
 {
-    /**
-     * Define environment setup.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function getEnvironmentSetUp($app)
+    public function testLazyLoading()
     {
-        // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => __DIR__.'/database.sqlite',
-            'prefix'   => '',
-        ]);
+        $country = Comment::first()->country;
+
+        $this->assertEquals(1, $country->id);
     }
 
-    public function test_through_one()
+    public function testLazyLoadingWithSingleThroughModel()
     {
-        $district = Stub_Test_Model_District::where('id', 1)->first();
+        $country = Post::first()->country;
 
-        $this->assertNotNull($district->country);
-        $this->assertEquals(1, $district->country->id);
+        $this->assertEquals(1, $country->id);
     }
 
-    public function test_through_two()
+    public function testLazyLoadingWithPrefix()
     {
-        $city = Stub_Test_Model_City::where('id', 1)->first();
+        $country = Comment::find(34)->countryWithPrefix;
 
-        $this->assertNotNull($city->country);
-        $this->assertEquals(1, $city->country->id);
+        $this->assertEquals(1, $country->id);
     }
 
-    public function test_eager_loading()
+    public function testLazyLoadingWithCustomForeignKeys()
     {
-        $cities = Stub_Test_Model_City::with('country')->where('id', '<', 17)->get();
+        $country = Comment::find(35)->countryWithCustomForeignKeys;
 
-        $this->assertCount(16, $cities);
-
-        foreach ($cities as $city) {
-            $this->assertEquals(ceil($city->id / 8), $city->country->id);
-        }
+        $this->assertEquals(1, $country->id);
     }
 
-    public function test_has_relation()
+    public function testLazyLoadingWithSoftDeletes()
     {
-        $cities_with_country = Stub_Test_Model_City::has('country')->get();
-        $all_cities = Stub_Test_Model_City::all();
+        $country = Comment::find(33)->country;
 
-        $this->assertCount(16, $cities_with_country);
-        $this->assertCount(18, $all_cities);
+        $this->assertNull($country);
     }
 
-    public function test_prefixed_foreign_key()
+    public function testEagerLoading()
     {
-        $city = Stub_Test_Model_City::where('id', 1)->first();
+        $comments = Comment::with('country')->get();
 
-        $this->assertNotNull($city->otherCountry);
-        $this->assertEquals(1, $city->otherCountry->id);
+        $this->assertEquals(1, $comments[0]->country->id);
+        $this->assertEquals(2, $comments[1]->country->id);
     }
 
-    public function test_custom_foreign_key()
+    public function testLazyEagerLoading()
     {
-        $district = Stub_Test_Model_District::where('id', 1)->first();
+        $comments = Comment::all()->load('country');
 
-        $this->assertNotNull($district->countryOffshore);
-        $this->assertEquals(1, $district->countryOffshore->id);
+        $this->assertEquals(1, $comments[0]->country->id);
+        $this->assertEquals(2, $comments[1]->country->id);
     }
 
-    public function test_custom_foreign_key_through_two()
+    public function testExistenceQuery()
     {
-        $city = Stub_Test_Model_City::where('id', 1)->first();
+        $comments = Comment::has('country')->get();
 
-        $this->assertNotNull($city->offshoreCountry);
-        $this->assertEquals(1, $city->offshoreCountry->id);
-    }
-
-    public function test_null_relation()
-    {
-        $district = new Stub_Test_Model_District();
-
-        $this->assertNull($district->country);
-    }
-}
-
-class Stub_Parent_Model extends Eloquent
-{
-    public function getForeignKey()
-    {
-        return Str::singular($this->getTable()).'_id';
-    }
-}
-
-class Stub_Test_Model_Contient extends Stub_Parent_Model
-{
-    protected $table = 'continents';
-
-    public function countries()
-    {
-        return $this->hasMany(Stub_Test_Model_Country::class);
-    }
-}
-
-class Stub_Test_Model_Country extends Stub_Parent_Model
-{
-    protected $table = 'countries';
-
-    public function continent()
-    {
-        return $this->belongsTo(Stub_Test_Model_Contient::class);
-    }
-}
-
-class Stub_Test_Model_State extends Stub_Parent_Model
-{
-    protected $table = 'states';
-}
-
-class Stub_Test_Model_Offshore_State extends Stub_Parent_Model
-{
-    protected $table = 'offshore_states';
-}
-
-class Stub_Test_Model_District extends Stub_Parent_Model
-{
-    use BelongsToThrough;
-
-    protected $table = 'districts';
-
-    public function country()
-    {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class, Stub_Test_Model_State::class);
-    }
-
-    public function countryOffshore()
-    {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class, [[Stub_Test_Model_Offshore_State::class, 'state_id']]);
-    }
-}
-
-class Stub_Test_Model_City extends Stub_Parent_Model
-{
-    use BelongsToThrough;
-
-    protected $table = 'cities';
-
-    public function country()
-    {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class,
-            [Stub_Test_Model_State::class, Stub_Test_Model_District::class]);
-    }
-
-    public function otherCountry()
-    {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class,
-            [Stub_Test_Model_State::class, Stub_Test_Model_District::class], null, 'other_');
-    }
-
-    public function offshoreCountry()
-    {
-        return $this->belongsToThrough(Stub_Test_Model_Country::class,
-            [[Stub_Test_Model_Offshore_State::class, 'state_id'], Stub_Test_Model_District::class]);
+        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
     }
 }
