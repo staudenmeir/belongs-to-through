@@ -191,7 +191,7 @@ class BelongsToThrough extends Relation
             if ($lastIndex === $index) {
                 $prev = $this->prefix.$prev; // TODO: Check if this line is really necessary. Its not covered by any of the tests.
             }
-            if ($this->getParent()->getTable() == $model->getTable()) {
+            if ($this->getParent()->getTable() === $model->getTable()) {
                 $alias = $model->getTable().'_'.time();
                 $other = $alias.'.'.$prev;
                 $query->leftJoin(new Expression($model->getTable().' as '.$alias), $one, '=', $other);
