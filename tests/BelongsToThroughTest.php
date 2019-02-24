@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Support\Arr;
 use Tests\Models\Comment;
 use Tests\Models\Post;
 
@@ -62,6 +63,6 @@ class BelongsToThroughTest extends TestCase
     {
         $comments = Comment::has('country')->get();
 
-        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
+        $this->assertEquals([31, 32, 33], Arr::pluck($comments, 'id'));
     }
 }

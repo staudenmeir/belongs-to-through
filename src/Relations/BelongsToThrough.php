@@ -231,6 +231,31 @@ class BelongsToThrough extends Relation
     }
 
     /**
+     * Add the constraints for a relationship count query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationCountQuery(Builder $query, Builder $parent)
+    {
+        return $this->getRelationExistenceQuery($query, $parent, new Expression('count(*)'));
+    }
+
+    /**
+     * Add the constraints for a relationship query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @param  array|mixed $columns
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
+    {
+        return $this->getRelationExistenceQuery($query, $parent, $columns);
+    }
+
+    /**
      * Get the results of the relationship.
      *
      * @return \Illuminate\Database\Eloquent\Model
