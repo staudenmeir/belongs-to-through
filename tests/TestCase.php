@@ -27,6 +27,18 @@ abstract class TestCase extends Base
         $db->setAsGlobal();
         $db->bootEloquent();
 
+        $this->migrate();
+
+        $this->seed();
+    }
+
+    /**
+     * Migrate the database.
+     *
+     * @return void
+     */
+    protected function migrate()
+    {
         DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('id');
         });
@@ -48,7 +60,15 @@ abstract class TestCase extends Base
             $table->unsignedInteger('post_id')->nullable();
             $table->unsignedInteger('custom_post_id')->nullable();
         });
+    }
 
+    /**
+     * Seed the database.
+     *
+     * @return void
+     */
+    protected function seed()
+    {
         Model::unguard();
 
         Country::create(['id' => 1]);
