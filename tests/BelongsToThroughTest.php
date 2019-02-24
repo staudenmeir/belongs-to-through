@@ -49,6 +49,7 @@ class BelongsToThroughTest extends TestCase
 
         $this->assertEquals(1, $comments[0]->country->id);
         $this->assertEquals(2, $comments[1]->country->id);
+        $this->assertNull($comments[2]->country);
     }
 
     public function testLazyEagerLoading()
@@ -57,13 +58,14 @@ class BelongsToThroughTest extends TestCase
 
         $this->assertEquals(1, $comments[0]->country->id);
         $this->assertEquals(2, $comments[1]->country->id);
+        $this->assertNull($comments[2]->country);
     }
 
     public function testExistenceQuery()
     {
         $comments = Comment::has('country')->get();
 
-        $this->assertEquals([31, 32, 33], Arr::pluck($comments, 'id'));
+        $this->assertEquals([31, 32], Arr::pluck($comments, 'id'));
     }
 
     public function testExistenceQueryWithPrefix()

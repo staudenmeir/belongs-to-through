@@ -79,12 +79,12 @@ class BelongsToThrough extends Relation
 
         $this->query->select([$this->getRelated()->getTable().'.*']);
 
+        $this->setSoftDeletes();
+
         if (static::$constraints) {
             $this->query->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
 
             $this->query->whereNotNull($this->getQualifiedParentKeyName());
-
-            $this->setSoftDeletes();
         }
     }
 
@@ -275,7 +275,7 @@ class BelongsToThrough extends Relation
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
-            $model->setRelation($relation, $this->getRelated());
+            $model->setRelation($relation, null);
         }
 
         return $models;
