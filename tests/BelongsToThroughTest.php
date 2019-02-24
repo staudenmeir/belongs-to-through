@@ -65,4 +65,11 @@ class BelongsToThroughTest extends TestCase
 
         $this->assertEquals([31, 32, 33], Arr::pluck($comments, 'id'));
     }
+
+    public function testExistenceQueryWithPrefix()
+    {
+        $comments = Comment::has('countryWithPrefix')->get();
+
+        $this->assertEquals([34], Arr::pluck($comments, 'id'));
+    }
 }

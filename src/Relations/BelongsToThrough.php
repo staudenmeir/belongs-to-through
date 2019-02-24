@@ -186,10 +186,10 @@ class BelongsToThrough extends Relation
         $one = $this->getRelated()->getQualifiedKeyName();
         $prev = $this->getForeignKey($this->getRelated());
         $alias = null;
-        $lastIndex = count($this->models);
+        $lastIndex = count($this->models) - 1;
         foreach ($this->models as $index => $model) {
             if ($lastIndex === $index) {
-                $prev = $this->prefix.$prev; // TODO: Check if this line is really necessary. Its not covered by any of the tests.
+                $prev = $this->prefix.$prev;
             }
             if ($this->getParent()->getTable() === $model->getTable()) {
                 $alias = $model->getTable().'_'.time();
