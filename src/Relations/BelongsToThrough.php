@@ -13,55 +13,47 @@ use Illuminate\Support\Str;
 class BelongsToThrough extends Relation
 {
     /**
-     * Column alias for matching eagerly loaded models.
+     * The column alias for the local key on the first "through" parent model.
      *
      * @var string
      */
-    const RELATED_THROUGH_KEY = '__deep_related_through_key';
+    const THROUGH_KEY = 'laravel_through_key';
 
     /**
-     * List of intermediate model instances.
+     * The "through" parent model instances.
      *
      * @var \Illuminate\Database\Eloquent\Model[]
      */
-    protected $models;
+    protected $throughParents;
 
     /**
-     * The local key on the relationship.
+     * The foreign key prefix for the first "through" parent model.
      *
      * @var string
      */
-    protected $localKey;
+    protected $prefix;
 
     /**
-     * TODO
-     *
-     * @var string
-     */
-    private $prefix;
-
-    /**
-     * An array of table names and their foreign keys.
+     * The custom foreign keys on the relationship.
      *
      * @var array
      */
-    private $foreignKeyLookup;
+    protected $foreignKeyLookup;
 
     /**
      * Create a new belongs to through relationship instance.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  \Illuminate\Database\Eloquent\Model[]  $models
+     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
      * @param  string|null  $localKey
      * @param  string  $prefix
      * @param  array  $foreignKeyLookup
      * @return void
      */
-    public function __construct(Builder $query, Model $parent, array $models, $localKey = null, $prefix = '', $foreignKeyLookup = [])
+    public function __construct(Builder $query, Model $parent, array $throughParents, $localKey = null, $prefix = '', array $foreignKeyLookup = [])
     {
-        $this->models = $models;
-        $this->localKey = $localKey ?: $parent->getKeyName();
+        $this->throughParents = $throughParents;
         $this->prefix = $prefix;
         $this->foreignKeyLookup = $foreignKeyLookup;
 
@@ -75,52 +67,51 @@ class BelongsToThrough extends Relation
      */
     public function addConstraints()
     {
-        $this->setJoins();
+        $this->query->select([$this->related->getTable().'.*']);
 
-        $this->query->select([$this->getRelated()->getTable().'.*']);
-
-        $this->setSoftDeletes();
+        $this->performJoins();
 
         if (static::$constraints) {
-            $this->query->where($this->getQualifiedParentKeyName(), '=', $this->parent[$this->localKey]);
+            $localValue = $this->parent[$this->getFirstForeignKeyName()];
 
-            $this->query->whereNotNull($this->getQualifiedParentKeyName());
+            $this->query->where($this->getQualifiedFirstLocalKeyName(), '=', $localValue);
         }
     }
 
     /**
-     * Set the required joins on the relation query.
+     * Set the join clauses on the query.
      *
+     * @param  \Illuminate\Database\Eloquent\Builder|null  $query
      * @return void
      */
-    protected function setJoins()
+    protected function performJoins(Builder $query = null)
     {
-        $one = $this->getRelated()->getQualifiedKeyName();
-        $prev = $this->getForeignKey($this->getRelated());
-        $lastIndex = count($this->models) - 1;
+        $query = $query ?: $this->query;
 
-        foreach ($this->models as $index => $model) {
-            if ($lastIndex === $index) {
-                $prev = $this->prefix.$prev;
+        foreach ($this->throughParents as $i => $model) {
+            $table = $model->getTable();
+
+            $predecessor = $i > 0 ? $this->throughParents[$i - 1] : $this->related;
+
+            $first = $table.'.'.$this->getForeignKeyName($predecessor);
+
+            $second = $predecessor->getQualifiedKeyName();
+
+            $query->join($table, $first, '=', $second);
+
+            if ($this->hasSoftDeletes($model)) {
+                $this->query->whereNull($model->getQualifiedDeletedAtColumn());
             }
-
-            $other = $model->getTable().'.'.$prev;
-
-            $this->query->leftJoin($model->getTable(), $one, '=', $other);
-
-            $prev = $this->getForeignKey($model);
-
-            $one = $model->getQualifiedKeyName();
         }
     }
 
     /**
-     * Get foreign key column name for the model.
+     * Get the foreign key for a model.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return string
      */
-    protected function getForeignKey(Model $model)
+    protected function getForeignKeyName(Model $model)
     {
         $table = $model->getTable();
 
@@ -132,25 +123,7 @@ class BelongsToThrough extends Relation
     }
 
     /**
-     * Set the soft deleting constraints on the relation query.
-     *
-     * @return void
-     */
-    protected function setSoftDeletes()
-    {
-        foreach ($this->models as $model) {
-            if ($model === $this->parent) {
-                continue;
-            }
-
-            if ($this->hasSoftDeletes($model)) {
-                $this->query->whereNull($model->getQualifiedDeletedAtColumn());
-            }
-        }
-    }
-
-    /**
-     * Determine whether the model uses Soft Deletes.
+     * Determine whether a model uses SoftDeletes.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @return bool
@@ -169,100 +142,12 @@ class BelongsToThrough extends Relation
     public function addEagerConstraints(array $models)
     {
         $this->query->addSelect([
-            $this->getParent()->getQualifiedKeyName().' as '.static::RELATED_THROUGH_KEY,
+            $this->getQualifiedFirstLocalKeyName().' as '.static::THROUGH_KEY,
         ]);
 
-        $this->query->whereIn($this->getParent()->getQualifiedKeyName(), $this->getKeys($models, $this->localKey));
-    }
+        $keys = $this->getKeys($models, $this->getFirstForeignKeyName());
 
-    /**
-     * TODO
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return void
-     */
-    protected function setRelationQueryConstraints(Builder $query)
-    {
-        $one = $this->getRelated()->getQualifiedKeyName();
-        $prev = $this->getForeignKey($this->getRelated());
-        $alias = null;
-        $lastIndex = count($this->models) - 1;
-        foreach ($this->models as $index => $model) {
-            if ($lastIndex === $index) {
-                $prev = $this->prefix.$prev;
-            }
-            if ($this->getParent()->getTable() === $model->getTable()) {
-                $alias = $model->getTable().'_'.time();
-                $other = $alias.'.'.$prev;
-                $query->leftJoin(new Expression($model->getTable().' as '.$alias), $one, '=', $other);
-            } else {
-                $other = $model->getTable().'.'.$prev;
-                $query->leftJoin($model->getTable(), $one, '=', $other);
-            }
-
-            $prev = $this->getForeignKey($model);
-            $one = $model->getQualifiedKeyName();
-        }
-
-        $key = $this->parent
-            ->newQueryWithoutScopes()
-            ->getQuery()
-            ->getGrammar()
-            ->wrap($this->getQualifiedParentKeyName());
-
-        $query->where(new Expression($alias.'.'.$this->getParent()->getKeyName()), '=', new Expression($key));
-    }
-
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $parent
-     * @param  array|mixed  $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
-    {
-        $query->select($columns);
-
-        $this->setRelationQueryConstraints($query);
-
-        return $query;
-    }
-
-    /**
-     * Add the constraints for a relationship count query.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parent
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function getRelationCountQuery(Builder $query, Builder $parent)
-    {
-        return $this->getRelationExistenceQuery($query, $parent, new Expression('count(*)'));
-    }
-
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parent
-     * @param  array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
-    {
-        return $this->getRelationExistenceQuery($query, $parent, $columns);
-    }
-
-    /**
-     * Get the results of the relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function getResults()
-    {
-        return $this->query->first();
+        $this->query->whereIn($this->getQualifiedFirstLocalKeyName(), $keys);
     }
 
     /**
@@ -294,7 +179,7 @@ class BelongsToThrough extends Relation
         $dictionary = $this->buildDictionary($results);
 
         foreach ($models as $model) {
-            $key = $model->{$this->localKey};
+            $key = $model[$this->getFirstForeignKeyName()];
 
             if (isset($dictionary[$key])) {
                 $model->setRelation($relation, $dictionary[$key]);
@@ -315,11 +200,87 @@ class BelongsToThrough extends Relation
         $dictionary = [];
 
         foreach ($results as $result) {
-            $dictionary[$result->{static::RELATED_THROUGH_KEY}] = $result;
+            $dictionary[$result[static::THROUGH_KEY]] = $result;
 
-            unset($result[static::RELATED_THROUGH_KEY]);
+            unset($result[static::THROUGH_KEY]);
         }
 
         return $dictionary;
+    }
+
+    /**
+     * Get the results of the relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getResults()
+    {
+        return $this->query->first();
+    }
+
+    /**
+     * Add the constraints for a relationship query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $parent
+     * @param  array|mixed  $columns
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
+    {
+        $this->performJoins($query);
+
+        $foreignKey = $parent->getQuery()->from.'.'.$this->getFirstForeignKeyName();
+
+        $foreignKey = new Expression($query->getQuery()->getGrammar()->wrap($foreignKey));
+
+        return $query->select($columns)->where(
+            $this->getQualifiedFirstLocalKeyName(), '=', $foreignKey
+        );
+    }
+
+    /**
+     * Add the constraints for a relationship count query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationCountQuery(Builder $query, Builder $parent)
+    {
+        return $this->getRelationExistenceQuery($query, $parent, new Expression('count(*)'));
+    }
+
+    /**
+     * Add the constraints for a relationship query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @param  array|mixed $columns
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
+    {
+        return $this->getRelationExistenceQuery($query, $parent, $columns);
+    }
+
+    /**
+     * Get the foreign key for the first "through" parent model.
+     *
+     * @return string
+     */
+    public function getFirstForeignKeyName()
+    {
+        return $this->prefix.$this->getForeignKeyName(end($this->throughParents));
+    }
+
+    /**
+     * Get the qualified local key for the first "through" parent model.
+     *
+     * @return string
+     */
+    public function getQualifiedFirstLocalKeyName()
+    {
+        return end($this->throughParents)->getQualifiedKeyName();
     }
 }

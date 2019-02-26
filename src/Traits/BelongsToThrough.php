@@ -22,7 +22,7 @@ trait BelongsToThrough
     {
         /** @var \Illuminate\Database\Eloquent\Model $relatedInstance */
         $relatedInstance = new $related;
-        $models = [];
+        $throughParents = [];
         $foreignKeys = [];
 
         foreach ((array) $through as $model) {
@@ -41,10 +41,8 @@ trait BelongsToThrough
                 $foreignKeys[$instance->getTable()] = $foreignKey;
             }
 
-            $models[] = $instance;
+            $throughParents[] = $instance;
         }
-
-        $models[] = $this;
 
         foreach ($foreignKeyLookup as $model => $foreignKey) {
             $instance = new $model;
@@ -54,7 +52,7 @@ trait BelongsToThrough
             }
         }
 
-        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $models, $localKey, $prefix, $foreignKeys);
+        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys);
     }
 
     /**
@@ -62,14 +60,14 @@ trait BelongsToThrough
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  \Illuminate\Database\Eloquent\Model[]  $models
+     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
      * @param  string  $localKey
      * @param  string  $prefix
      * @param  array  $foreignKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    protected function newBelongsToThrough(Builder $query, Model $parent, array $models, $localKey, $prefix, array $foreignKeyLookup)
+    protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup)
     {
-        return new Relation($query, $parent, $models, $localKey, $prefix, $foreignKeyLookup);
+        return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup);
     }
 }
