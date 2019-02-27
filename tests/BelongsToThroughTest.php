@@ -52,6 +52,14 @@ class BelongsToThroughTest extends TestCase
         $this->assertNull($comments[2]->country);
     }
 
+    public function testEagerLoadingWithPrefix()
+    {
+        $comments = Comment::with('countryWithPrefix')->get();
+
+        $this->assertNull($comments[0]->countryWithPrefix);
+        $this->assertEquals(1, $comments[3]->countryWithPrefix->id);
+    }
+
     public function testLazyEagerLoading()
     {
         $comments = Comment::all()->load('country');
