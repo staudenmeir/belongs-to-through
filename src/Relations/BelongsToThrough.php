@@ -263,7 +263,7 @@ class BelongsToThrough extends Relation
     {
         return $this->getRelationExistenceQuery($query, $parent, $columns);
     }
-    
+
     /**
      * Restore soft-deleted models.
      *
@@ -274,15 +274,19 @@ class BelongsToThrough extends Relation
     {
         if (empty($columns)) {
             $this->query->withTrashed();
+
             return $this;
         }
+
         if (is_array($columns[0])) {
             $columns = $columns[0];
         }
+
         $this->query->getQuery()->wheres = collect($this->query->getQuery()->wheres)
             ->reject(function ($where) use ($columns) {
                 return $where['type'] === 'Null' && in_array($where['column'], $columns);
             })->values()->all();
+
         return $this;
     }
 

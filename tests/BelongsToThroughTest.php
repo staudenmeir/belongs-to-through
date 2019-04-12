@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Support\Arr;
 use Tests\Models\Comment;
-use Tests\Models\Post;
 
 class BelongsToThroughTest extends TestCase
 {
@@ -17,9 +16,9 @@ class BelongsToThroughTest extends TestCase
 
     public function testLazyLoadingWithSingleThroughModel()
     {
-        $country = Post::first()->country;
+        $user = Comment::first()->user;
 
-        $this->assertEquals(1, $country->id);
+        $this->assertEquals(11, $user->id);
     }
 
     public function testLazyLoadingWithPrefix()
@@ -81,5 +80,23 @@ class BelongsToThroughTest extends TestCase
         $comments = Comment::has('countryWithPrefix')->get();
 
         $this->assertEquals([34], Arr::pluck($comments, 'id'));
+    }
+
+    public function testWithTrashed()
+    {
+        $user = Comment::find(33)->user()
+            ->withTrashed()
+            ->first();
+
+        $this->assertEquals(13, $user->id);
+    }
+
+    public function testWithTrashedIntermediate()
+    {
+        $country = Comment::find(33)->country()
+            ->withTrashed('users.deleted_at')
+            ->first();
+
+        $this->assertEquals(3, $country->id);
     }
 }

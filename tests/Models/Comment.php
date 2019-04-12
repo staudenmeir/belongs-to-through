@@ -24,4 +24,9 @@ class Comment extends Model
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class], null, 'custom_');
     }
+
+    public function user()
+    {
+        return $this->belongsToThrough(User::class, Post::class);
+    }
 }

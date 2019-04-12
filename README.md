@@ -80,6 +80,28 @@ class Comment extends Model
 }
 ```
 
+### Soft Deleting
+
+By default, soft-deleted intermediate models will be excluded from the result. Use `withTrashed()` to include them:
+
+```php
+class Comment extends Model
+{
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
+    public function country()
+    {
+        return $this->belongsToThrough('App\Country', ['App\User', 'App\Post'])
+            ->withTrashed('users.deleted_at');
+    }
+}
+
+class User extends Model
+{
+    use SoftDeletes;
+}
+```
+
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE OF CONDUCT](CODE_OF_CONDUCT.md) for details.
