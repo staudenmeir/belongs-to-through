@@ -94,7 +94,7 @@ class BelongsToThroughTest extends TestCase
     public function testWithTrashedIntermediate()
     {
         $country = Comment::find(33)->country()
-            ->withTrashed('users.deleted_at')
+            ->withTrashed(['users.deleted_at'])
             ->first();
 
         $this->assertEquals(3, $country->id);
