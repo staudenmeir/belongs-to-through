@@ -43,12 +43,12 @@ class BelongsToThrough extends Relation
     /**
      * Create a new belongs to through relationship instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
-     * @param  string|null  $localKey
-     * @param  string  $prefix
-     * @param  array  $foreignKeyLookup
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param string|null $localKey
+     * @param string $prefix
+     * @param array $foreignKeyLookup
      * @return void
      */
     public function __construct(Builder $query, Model $parent, array $throughParents, $localKey = null, $prefix = '', array $foreignKeyLookup = [])
@@ -81,7 +81,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the join clauses on the query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder|null  $query
+     * @param \Illuminate\Database\Eloquent\Builder|null $query
      * @return void
      */
     protected function performJoins(Builder $query = null)
@@ -108,7 +108,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the foreign key for a model.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return string
      */
     protected function getForeignKeyName(Model $model)
@@ -125,7 +125,7 @@ class BelongsToThrough extends Relation
     /**
      * Determine whether a model uses SoftDeletes.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return bool
      */
     public function hasSoftDeletes(Model $model)
@@ -136,7 +136,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param  array  $models
+     * @param array $models
      * @return void
      */
     public function addEagerConstraints(array $models)
@@ -153,8 +153,8 @@ class BelongsToThrough extends Relation
     /**
      * Initialize the relation on a set of models.
      *
-     * @param  \Illuminate\Database\Eloquent\Model[]  $models
-     * @param  string  $relation
+     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param string $relation
      * @return array
      */
     public function initRelation(array $models, $relation)
@@ -169,9 +169,9 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param  \Illuminate\Database\Eloquent\Model[]  $models
-     * @param  \Illuminate\Database\Eloquent\Collection  $results
-     * @param  string  $relation
+     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param string $relation
      * @return array
      */
     public function match(array $models, Collection $results, $relation)
@@ -192,7 +192,7 @@ class BelongsToThrough extends Relation
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
-     * @param  \Illuminate\Database\Eloquent\Collection  $results
+     * @param \Illuminate\Database\Eloquent\Collection $results
      * @return array
      */
     protected function buildDictionary(Collection $results)
@@ -221,9 +221,9 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder  $parent
-     * @param  array|mixed  $columns
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $parent
+     * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
@@ -242,8 +242,8 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship count query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parent
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $parent
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getRelationCountQuery(Builder $query, Builder $parent)
@@ -254,9 +254,9 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship query.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Builder  $parent
-     * @param  array|mixed $columns
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Builder $parent
+     * @param array|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getRelationQuery(Builder $query, Builder $parent, $columns = ['*'])
@@ -267,7 +267,7 @@ class BelongsToThrough extends Relation
     /**
      * Restore soft-deleted models.
      *
-     * @param  string  ...$columns
+     * @param array|string ...$columns
      * @return $this
      */
     public function withTrashed(...$columns)

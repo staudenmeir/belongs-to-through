@@ -11,11 +11,11 @@ trait BelongsToThrough
     /**
      * Define a belongs-to-through relationship.
      *
-     * @param  string  $related
-     * @param  array|string  $through
-     * @param  string|null  $localKey
-     * @param  string  $prefix
-     * @param  array  $foreignKeyLookup
+     * @param string $related
+     * @param array|string $through
+     * @param string|null $localKey
+     * @param string $prefix
+     * @param array $foreignKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [])
@@ -58,12 +58,12 @@ trait BelongsToThrough
     /**
      * Instantiate a new BelongsToThrough relationship.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  \Illuminate\Database\Eloquent\Model  $parent
-     * @param  \Illuminate\Database\Eloquent\Model[]  $throughParents
-     * @param  string  $localKey
-     * @param  string  $prefix
-     * @param  array  $foreignKeyLookup
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param string $localKey
+     * @param string $prefix
+     * @param array $foreignKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup)
