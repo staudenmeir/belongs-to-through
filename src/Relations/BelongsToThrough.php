@@ -67,8 +67,6 @@ class BelongsToThrough extends Relation
      */
     public function addConstraints()
     {
-        $this->query->select([$this->related->getTable().'.*']);
-
         $this->performJoins();
 
         if (static::$constraints) {
@@ -141,10 +139,6 @@ class BelongsToThrough extends Relation
      */
     public function addEagerConstraints(array $models)
     {
-        $this->query->addSelect([
-            $this->getQualifiedFirstLocalKeyName().' as '.static::THROUGH_KEY,
-        ]);
-
         $keys = $this->getKeys($models, $this->getFirstForeignKeyName());
 
         $this->query->whereIn($this->getQualifiedFirstLocalKeyName(), $keys);
@@ -215,7 +209,43 @@ class BelongsToThrough extends Relation
      */
     public function getResults()
     {
-        return $this->query->first();
+        return $this->first();
+    }
+
+    /**
+     * Execute the query and get the first result.
+     *
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Model|object|static|null
+     */
+    public function first($columns = ['*'])
+    {
+        if ($columns === ['*']) {
+            $columns = [$this->related->getTable().'.*'];
+        }
+
+        return $this->query->first($columns);
+    }
+
+    /**
+     * Execute the query as a "select" statement.
+     *
+     * @param array $columns
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function get($columns = ['*'])
+    {
+        $columns = $this->query->getQuery()->columns ? [] : $columns;
+
+        if ($columns === ['*']) {
+            $columns = [$this->related->getTable().'.*'];
+        }
+
+        $columns[] = $this->getQualifiedFirstLocalKeyName().' as '.static::THROUGH_KEY;
+
+        $this->query->addSelect($columns);
+
+        return $this->query->get();
     }
 
     /**
