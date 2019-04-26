@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Tests\Models\Comment;
 
@@ -12,7 +13,9 @@ class BelongsToThroughTest extends TestCase
         $country = Comment::first()->country;
 
         $this->assertEquals(1, $country->id);
-        $this->assertEquals(1, $country->users_count);
+        if (method_exists(Builder::class, 'withCount')) {
+            $this->assertEquals(1, $country->users_count);
+        }
     }
 
     public function testLazyLoadingWithSingleThroughModel()
@@ -50,7 +53,9 @@ class BelongsToThroughTest extends TestCase
         $this->assertEquals(1, $comments[0]->country->id);
         $this->assertEquals(2, $comments[1]->country->id);
         $this->assertNull($comments[2]->country);
-        $this->assertEquals(1, $comments[0]->country->users_count);
+        if (method_exists(Builder::class, 'withCount')) {
+            $this->assertEquals(1, $comments[0]->country->users_count);
+        }
     }
 
     public function testEagerLoadingWithPrefix()
