@@ -6,7 +6,8 @@
 [![License](https://poser.pugx.org/staudenmeir/belongs-to-through/license)](https://packagist.org/packages/staudenmeir/belongs-to-through)
 
 ## Introduction
-This inverse version of `HasManyThrough` allows `BelongsToThrough` relationships with unlimited intermediate models.  
+This inverse version of `HasManyThrough` allows `BelongsToThrough` relationships with unlimited intermediate models.
+
 Supports Laravel 5.0+ and PHP 5.6+.
 
 ## Installation
