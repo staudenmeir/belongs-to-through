@@ -8,11 +8,11 @@
 ## Introduction
 This inverse version of `HasManyThrough` allows `BelongsToThrough` relationships with unlimited intermediate models.
 
-Supports Laravel 5.0+ and PHP 5.6+.
+Supports Laravel 5.0+.
 
 ## Installation
 
-    composer require staudenmeir/belongs-to-through
+    composer require staudenmeir/belongs-to-through:"^2.5"
 
 ## Usage
 

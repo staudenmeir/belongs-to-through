@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Support\Arr;
 use Tests\Models\Comment;
 
 class BelongsToThroughTest extends TestCase
@@ -72,14 +71,14 @@ class BelongsToThroughTest extends TestCase
     {
         $comments = Comment::has('country')->get();
 
-        $this->assertEquals([31, 32], Arr::pluck($comments, 'id'));
+        $this->assertEquals([31, 32], $comments->pluck('id')->all());
     }
 
     public function testExistenceQueryWithPrefix()
     {
         $comments = Comment::has('countryWithPrefix')->get();
 
-        $this->assertEquals([34], Arr::pluck($comments, 'id'));
+        $this->assertEquals([34], $comments->pluck('id')->all());
     }
 
     public function testWithTrashed()
