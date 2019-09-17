@@ -109,6 +109,6 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE OF CONDUCT](CODE_OF_CONDUCT
 
 ## Credits
 
-- [Rahul Kadyan](http://znck.me)
+- [Rahul Kadyan](https://github.com/znck)
 - [Danny Weeks](https://github.com/dannyweeks)
 - [All Contributors](../../contributors)
