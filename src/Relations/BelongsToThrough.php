@@ -265,7 +265,9 @@ class BelongsToThrough extends Relation
         $foreignKey = new Expression($query->getQuery()->getGrammar()->wrap($foreignKey));
 
         return $query->select($columns)->where(
-            $this->getQualifiedFirstLocalKeyName(), '=', $foreignKey
+            $this->getQualifiedFirstLocalKeyName(),
+            '=',
+            $foreignKey
         );
     }
 
