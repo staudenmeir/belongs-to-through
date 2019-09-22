@@ -5,12 +5,15 @@ namespace Znck\Eloquent\Relations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class BelongsToThrough extends Relation
 {
+    use SupportsDefaultModels;
+
     /**
      * The column alias for the local key on the first "through" parent model.
      *
@@ -153,7 +156,7 @@ class BelongsToThrough extends Relation
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
-            $model->setRelation($relation, null);
+            $model->setRelation($relation, $this->getDefaultFor($model));
         }
 
         return $models;
@@ -208,7 +211,7 @@ class BelongsToThrough extends Relation
      */
     public function getResults()
     {
-        return $this->first();
+        return $this->first() ?: $this->getDefaultFor($this->parent);
     }
 
     /**

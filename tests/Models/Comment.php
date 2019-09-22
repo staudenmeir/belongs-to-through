@@ -6,7 +6,7 @@ class Comment extends Model
 {
     public function country()
     {
-        return $this->belongsToThrough(Country::class, [User::class, Post::class]);
+        return $this->belongsToThrough(Country::class, [User::class, Post::class])->withDefault();
     }
 
     public function countryWithCustomForeignKeys()

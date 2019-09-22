@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Tests\Models\Comment;
+use Tests\Models\Country;
 
 class BelongsToThroughTest extends TestCase
 {
@@ -38,7 +39,15 @@ class BelongsToThroughTest extends TestCase
     {
         $country = Comment::find(33)->country;
 
-        $this->assertNull($country);
+        $this->assertFalse($country->exists);
+    }
+
+    public function testLazyLoadingWithDefault()
+    {
+        $country = Comment::find(33)->country;
+
+        $this->assertInstanceOf(Country::class, $country);
+        $this->assertFalse($country->exists);
     }
 
     public function testEagerLoading()
@@ -47,7 +56,8 @@ class BelongsToThroughTest extends TestCase
 
         $this->assertEquals(1, $comments[0]->country->id);
         $this->assertEquals(2, $comments[1]->country->id);
-        $this->assertNull($comments[2]->country);
+        $this->assertInstanceOf(Country::class, $comments[2]->country);
+        $this->assertFalse($comments[2]->country->exists);
     }
 
     public function testEagerLoadingWithPrefix()
@@ -64,7 +74,8 @@ class BelongsToThroughTest extends TestCase
 
         $this->assertEquals(1, $comments[0]->country->id);
         $this->assertEquals(2, $comments[1]->country->id);
-        $this->assertNull($comments[2]->country);
+        $this->assertInstanceOf(Country::class, $comments[2]->country);
+        $this->assertFalse($comments[2]->country->exists);
     }
 
     public function testExistenceQuery()
