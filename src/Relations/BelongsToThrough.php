@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
 
 class BelongsToThrough extends Relation
@@ -128,7 +127,7 @@ class BelongsToThrough extends Relation
      */
     public function hasSoftDeletes(Model $model)
     {
-        return in_array(SoftDeletes::class, class_uses_recursive(get_class($model)));
+        return in_array(SoftDeletes::class, class_uses_recursive($model));
     }
 
     /**
@@ -262,9 +261,7 @@ class BelongsToThrough extends Relation
 
         $foreignKey = $parent->getQuery()->from.'.'.$this->getFirstForeignKeyName();
 
-        $foreignKey = new Expression($query->getQuery()->getGrammar()->wrap($foreignKey));
-
-        return $query->select($columns)->where(
+        return $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
             '=',
             $foreignKey
@@ -315,5 +312,16 @@ class BelongsToThrough extends Relation
     public function getQualifiedFirstLocalKeyName()
     {
         return end($this->throughParents)->getQualifiedKeyName();
+    }
+
+    /**
+     * Make a new related instance for the given model.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function newRelatedInstanceFor(Model $parent)
+    {
+        return $this->related->newInstance();
     }
 }

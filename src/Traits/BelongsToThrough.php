@@ -20,8 +20,7 @@ trait BelongsToThrough
      */
     public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [])
     {
-        /** @var \Illuminate\Database\Eloquent\Model $relatedInstance */
-        $relatedInstance = new $related;
+        $relatedInstance = $this->newRelatedInstance($related);
         $throughParents = [];
         $foreignKeys = [];
 
