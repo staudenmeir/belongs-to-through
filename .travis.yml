@@ -11,8 +11,8 @@ matrix:
     - php: 7.2
       env: RELEASE=lowest
     - php: 7.3
+    - php: 7.4
       env: COVERAGE=yes
-    - php: 7.4snapshot
 
 cache:
   directories:
