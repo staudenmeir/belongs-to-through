@@ -50,6 +50,13 @@ class BelongsToThroughTest extends TestCase
         $this->assertFalse($country->exists);
     }
 
+    public function testLazyLoadingWithAlias()
+    {
+        $comment = Comment::find(35)->grandparent;
+
+        $this->assertEquals(33, $comment->id);
+    }
+
     public function testEagerLoading()
     {
         $comments = Comment::with('country')->get();

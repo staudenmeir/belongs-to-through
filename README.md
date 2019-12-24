@@ -81,6 +81,37 @@ class Comment extends Model
 }
 ```
 
+### Table Aliases
+
+If your relationship path contains the same model multiple times, you can specify a table alias (Laravel 6+):
+
+```php
+class Comment extends Model
+{
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
+    public function grandparent()
+    {
+        return $this->belongsToThrough(
+            'App\Comment',
+            'App\Comment as alias', 
+            null,
+            '',
+            ['App\Comment' => 'parent_id']
+        );
+    }
+}
+```
+
+Use the `HasTableAlias` trait in the models you are aliasing:
+
+```php
+class Comment extends Model
+{
+    use \Znck\Eloquent\Traits\HasTableAlias;
+}
+```
+
 ### Soft Deleting
 
 By default, soft-deleted intermediate models will be excluded from the result. Use `withTrashed()` to include them:

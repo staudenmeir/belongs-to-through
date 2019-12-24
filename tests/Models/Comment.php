@@ -2,8 +2,12 @@
 
 namespace Tests\Models;
 
+use Znck\Eloquent\Traits\HasTableAlias;
+
 class Comment extends Model
 {
+    use HasTableAlias;
+
     public function country()
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class])->withDefault();
@@ -23,6 +27,11 @@ class Comment extends Model
     public function countryWithPrefix()
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class], null, 'custom_');
+    }
+
+    public function grandparent()
+    {
+        return $this->belongsToThrough(self::class, self::class.' as alias', null, '', [self::class => 'parent_id']);
     }
 
     public function user()

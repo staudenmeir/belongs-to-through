@@ -89,15 +89,13 @@ class BelongsToThrough extends Relation
         $query = $query ?: $this->query;
 
         foreach ($this->throughParents as $i => $model) {
-            $table = $model->getTable();
-
             $predecessor = $i > 0 ? $this->throughParents[$i - 1] : $this->related;
 
-            $first = $table.'.'.$this->getForeignKeyName($predecessor);
+            $first = $model->qualifyColumn($this->getForeignKeyName($predecessor));
 
             $second = $predecessor->getQualifiedKeyName();
 
-            $query->join($table, $first, '=', $second);
+            $query->join($model->getTable(), $first, '=', $second);
 
             if ($this->hasSoftDeletes($model)) {
                 $this->query->whereNull($model->getQualifiedDeletedAtColumn());
@@ -113,7 +111,7 @@ class BelongsToThrough extends Relation
      */
     protected function getForeignKeyName(Model $model)
     {
-        $table = $model->getTable();
+        $table = explode(' as ', $model->getTable())[0];
 
         if (array_key_exists($table, $this->foreignKeyLookup)) {
             return $this->foreignKeyLookup[$table];

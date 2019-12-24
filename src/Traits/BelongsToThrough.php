@@ -33,8 +33,7 @@ trait BelongsToThrough
                 $model = $model[0];
             }
 
-            /** @var \Illuminate\Database\Eloquent\Model $instance */
-            $instance = new $model;
+            $instance = $this->belongsToThroughParentInstance($model);
 
             if ($foreignKey) {
                 $foreignKeys[$instance->getTable()] = $foreignKey;
@@ -52,6 +51,26 @@ trait BelongsToThrough
         }
 
         return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys);
+    }
+
+    /**
+     * Create a through parent instance for a belongs-to-through relationship.
+     *
+     * @param string $model
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    protected function belongsToThroughParentInstance($model)
+    {
+        $segments = preg_split('/\s+as\s+/i', $model);
+
+        /** @var \Illuminate\Database\Eloquent\Model $instance */
+        $instance = new $segments[0];
+
+        if (isset($segments[1])) {
+            $instance->setTable($instance->getTable().' as '.$segments[1]);
+        }
+
+        return $instance;
     }
 
     /**

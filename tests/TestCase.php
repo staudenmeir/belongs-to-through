@@ -59,6 +59,7 @@ abstract class TestCase extends Base
             $table->increments('id');
             $table->unsignedInteger('post_id')->nullable();
             $table->unsignedInteger('custom_post_id')->nullable();
+            $table->unsignedInteger('parent_id')->nullable();
         });
     }
 
@@ -84,11 +85,11 @@ abstract class TestCase extends Base
         Post::create(['id' => 23, 'user_id' => 13, 'custom_user_id' => null]);
         Post::create(['id' => 24, 'user_id' => null, 'custom_user_id' => 11]);
 
-        Comment::create(['id' => 31, 'post_id' => 21, 'custom_post_id' => null]);
-        Comment::create(['id' => 32, 'post_id' => 22, 'custom_post_id' => null]);
-        Comment::create(['id' => 33, 'post_id' => 23, 'custom_post_id' => null]);
-        Comment::create(['id' => 34, 'post_id' => null, 'custom_post_id' => 21]);
-        Comment::create(['id' => 35, 'post_id' => null, 'custom_post_id' => 24]);
+        Comment::create(['id' => 31, 'post_id' => 21, 'custom_post_id' => null, 'parent_id' => null]);
+        Comment::create(['id' => 32, 'post_id' => 22, 'custom_post_id' => null, 'parent_id' => null]);
+        Comment::create(['id' => 33, 'post_id' => 23, 'custom_post_id' => null, 'parent_id' => null]);
+        Comment::create(['id' => 34, 'post_id' => null, 'custom_post_id' => 21, 'parent_id' => 33]);
+        Comment::create(['id' => 35, 'post_id' => null, 'custom_post_id' => 24, 'parent_id' => 34]);
 
         Model::reguard();
     }
