@@ -111,7 +111,7 @@ class BelongsToThrough extends Relation
      */
     public function getForeignKeyName(Model $model = null)
     {
-        $table = ($model ?? $this->parent)->getTable();
+        $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
 
         if (array_key_exists($table, $this->foreignKeyLookup)) {
             return $this->foreignKeyLookup[$table];
