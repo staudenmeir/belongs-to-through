@@ -106,7 +106,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the foreign key for a model.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param \Illuminate\Database\Eloquent\Model|null $model
      * @return string
      */
     public function getForeignKeyName(Model $model = null)
