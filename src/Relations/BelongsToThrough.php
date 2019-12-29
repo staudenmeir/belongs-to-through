@@ -109,9 +109,9 @@ class BelongsToThrough extends Relation
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return string
      */
-    protected function getForeignKeyName(Model $model)
+    public function getForeignKeyName(Model $model = null)
     {
-        $table = explode(' as ', $model->getTable())[0];
+        $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
 
         if (array_key_exists($table, $this->foreignKeyLookup)) {
             return $this->foreignKeyLookup[$table];
