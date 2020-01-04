@@ -1,6 +1,6 @@
 {
     "name": "staudenmeir/belongs-to-through",
-    "description": "Laravel Eloquent BelongsToThrough relationship",
+    "description": "Laravel Eloquent BelongsToThrough relationships",
     "license": "MIT",
     "authors": [
         {
