@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/staudenmeir/belongs-to-through.svg?branch=master)](https://travis-ci.org/staudenmeir/belongs-to-through)
+![CI](https://github.com/staudenmeir/belongs-to-through/workflows/CI/badge.svg)
 [![Code Coverage](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/staudenmeir/belongs-to-through/v/stable)](https://packagist.org/packages/staudenmeir/belongs-to-through)
