@@ -4,6 +4,8 @@ namespace Tests;
 
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\Post;
+use Tests\Models\User;
 
 class BelongsToThroughTest extends TestCase
 {
@@ -115,5 +117,14 @@ class BelongsToThroughTest extends TestCase
             ->first();
 
         $this->assertEquals(3, $country->id);
+    }
+
+    public function testGetThroughParents()
+    {
+        $throughParents = Comment::first()->country()->getThroughParents();
+
+        $this->assertCount(2, $throughParents);
+        $this->assertInstanceOf(User::class, $throughParents[0]);
+        $this->assertInstanceOf(Post::class, $throughParents[1]);
     }
 }

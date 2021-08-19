@@ -296,6 +296,16 @@ class BelongsToThrough extends Relation
     }
 
     /**
+     * Get the "through" parent model instances.
+     *
+     * @return \Illuminate\Database\Eloquent\Model[]
+     */
+    public function getThroughParents()
+    {
+        return $this->throughParents;
+    }
+
+    /**
      * Get the foreign key for the first "through" parent model.
      *
      * @return string
