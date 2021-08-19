@@ -18,7 +18,7 @@ abstract class TestCase extends Base
     {
         parent::setUp();
 
-        $db = new DB;
+        $db = new DB();
         $db->addConnection([
             'driver' => 'sqlite',
             'database' => ':memory:',

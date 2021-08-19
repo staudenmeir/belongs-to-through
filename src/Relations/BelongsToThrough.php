@@ -19,7 +19,7 @@ class BelongsToThrough extends Relation
      *
      * @var string
      */
-    const THROUGH_KEY = 'laravel_through_key';
+    public const THROUGH_KEY = 'laravel_through_key';
 
     /**
      * The "through" parent model instances.

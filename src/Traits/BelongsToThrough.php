@@ -43,7 +43,7 @@ trait BelongsToThrough
         }
 
         foreach ($foreignKeyLookup as $model => $foreignKey) {
-            $instance = new $model;
+            $instance = new $model();
 
             if ($foreignKey) {
                 $foreignKeys[$instance->getTable()] = $foreignKey;
@@ -64,7 +64,7 @@ trait BelongsToThrough
         $segments = preg_split('/\s+as\s+/i', $model);
 
         /** @var \Illuminate\Database\Eloquent\Model $instance */
-        $instance = new $segments[0];
+        $instance = new $segments[0]();
 
         if (isset($segments[1])) {
             $instance->setTable($instance->getTable().' as '.$segments[1]);
