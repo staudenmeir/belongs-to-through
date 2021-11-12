@@ -14,6 +14,10 @@ Supports Laravel 5.0+.
 
     composer require staudenmeir/belongs-to-through:"^2.5"
 
+Use this command if you are in PowerShell on Windows (e.g. in VS Code):
+
+    composer require staudenmeir/belongs-to-through:"^^^^2.5"
+
 ## Usage
 
 Consider this `HasManyThrough` relationship:  
