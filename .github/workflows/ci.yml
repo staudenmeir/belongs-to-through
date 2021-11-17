@@ -32,5 +32,5 @@ jobs:
       - run: |
           PHPUNIT_FLAGS=$([ "${{ matrix.coverage }}" == "xdebug" ] && echo "--coverage-clover=coverage.xml" || echo "")
           vendor/bin/phpunit $PHPUNIT_FLAGS
-      - run: vendor/bin/ocular code-coverage:upload --format=php-clover coverage.xml
+      - run: php tests/coverage/scrutinizer.php
         if: matrix.coverage == 'xdebug'
