@@ -13,12 +13,11 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
-        "illuminate/database": "^8.0"
+        "php": "^8.0.2",
+        "illuminate/database": "^9.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.3",
-        "scrutinizer/ocular": "^1.8"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
