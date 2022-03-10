@@ -24,6 +24,11 @@ class Comment extends Model
         );
     }
 
+    public function countryWithTrashedUser()
+    {
+        return $this->country()->withTrashed(['users.deleted_at']);
+    }
+
     public function countryWithPrefix()
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class], null, 'custom_');

@@ -98,7 +98,11 @@ class BelongsToThrough extends Relation
             $query->join($model->getTable(), $first, '=', $second);
 
             if ($this->hasSoftDeletes($model)) {
-                $this->query->whereNull($model->getQualifiedDeletedAtColumn());
+                $column= $model->getQualifiedDeletedAtColumn();
+
+                $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
+                    $query->whereNull($column);
+                });
             }
         }
     }
@@ -287,10 +291,9 @@ class BelongsToThrough extends Relation
             $columns = $columns[0];
         }
 
-        $this->query->getQuery()->wheres = collect($this->query->getQuery()->wheres)
-            ->reject(function ($where) use ($columns) {
-                return $where['type'] === 'Null' && in_array($where['column'], $columns);
-            })->values()->all();
+        foreach ($columns as $column) {
+            $this->query->withoutGlobalScope(__CLASS__ . ":$column");
+        }
 
         return $this;
     }

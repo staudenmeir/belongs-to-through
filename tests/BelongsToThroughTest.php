@@ -119,6 +119,13 @@ class BelongsToThroughTest extends TestCase
         $this->assertEquals(3, $country->id);
     }
 
+    public function testWithTrashedIntermediateAndWhereHas()
+    {
+        $comments = Comment::has('countryWithTrashedUser')->get();
+
+        $this->assertEquals([31, 32, 33], $comments->pluck('id')->all());
+    }
+
     public function testGetThroughParents()
     {
         $throughParents = Comment::first()->country()->getThroughParents();
