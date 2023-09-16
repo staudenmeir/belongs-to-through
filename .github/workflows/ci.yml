@@ -11,7 +11,7 @@ jobs:
         php: [ 8.3, 8.2, 8.1 ]
         release: [ stable, lowest ]
         include:
-          - php: 8.2
+          - php: 8.3
             release: stable
             coverage: xdebug
 
