@@ -121,7 +121,7 @@ class BelongsToThrough extends Relation
             return $this->foreignKeyLookup[$table];
         }
 
-        return Str::singular($table).'_id';
+        return Str::singular($table).'_'.$model->getKeyName();
     }
 
     /**
