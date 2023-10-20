@@ -25,7 +25,6 @@ trait BelongsToThrough
         $relatedInstance = $this->newRelatedInstance($related);
         $throughParents  = [];
         $foreignKeys     = [];
-        $localKeys       = [];
 
         foreach ((array) $through as $model) {
             $foreignKey = null;
@@ -45,23 +44,33 @@ trait BelongsToThrough
             $throughParents[] = $instance;
         }
 
-        foreach ($foreignKeyLookup as $model => $foreignKey) {
-            $instance = new $model();
+        $foreignKeys = array_merge($foreignKeys, $this->mapKeys($foreignKeyLookup));
 
-            if ($foreignKey) {
-                $foreignKeys[$instance->getTable()] = $foreignKey;
-            }
-        }
-
-        foreach ($localKeyLookup as $model => $localKey) {
-            $instance = new $model();
-
-            if ($localKey) {
-                $localKeys[$instance->getTable()] = $localKey;
-            }
-        }
+        $localKeys = $this->mapKeys($localKeyLookup);
 
         return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys, $localKeys);
+    }
+
+    /**
+     * Map keys to an associative array where the key is the table name and the value is the key from the lookup.
+     *
+     * @param array $keyLookup
+     * @return array
+     */
+    protected function mapKeys(array $keyLookup)
+    {
+        $keys = [];
+
+        // Iterate over each model and key in the key lookup
+        foreach ($keyLookup as $model => $key) {
+            // Create a new instance of the model
+            $instance = new $model();
+
+            // Add the table name and key to the keys array
+            $keys[$instance->getTable()] = $key;
+        }
+
+        return $keys;
     }
 
     /**
@@ -95,7 +104,7 @@ trait BelongsToThrough
      * @param string $prefix
      * @param array $foreignKeyLookup
      * @param array $localKeyLookup
-     * 
+     *
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
     protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup, array $localKeyLookup)
