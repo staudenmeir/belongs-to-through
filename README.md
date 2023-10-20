@@ -86,6 +86,30 @@ class Comment extends Model
 }
 ```
 
+You can specify custom local keys for the relations:
+
+`VendorCustomerAddress` → belongs to → `VendorCustomer` in `VendorCustomerAddress.vendor_customer_id`
+`VendorCustomerAddress` → belongs to → `CustomerAddress` in `VendorCustomerAddress.address_id`
+
+You can access `VendorCustomer` from `CustomerAddress` by the following
+
+```php
+class CustomerAddress extends Model
+{
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
+    public function vendorCustomer(): BelongsToThrough
+    {
+        return $this->belongsToThrough(
+            VendorCustomer::class,
+            VendorCustomerAddress::class,
+            foreignKeyLookup: [VendorCustomerAddress::class => 'id'],
+            localKeyLookup: [VendorCustomerAddress::class => 'address_id'],
+        );
+    }    
+}
+```
+
 ### Table Aliases
 
 If your relationship path contains the same model multiple times, you can specify a table alias (Laravel 6+):
