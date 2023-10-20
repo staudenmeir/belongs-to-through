@@ -9,8 +9,11 @@ use Illuminate\Database\Schema\Blueprint;
 use PHPUnit\Framework\TestCase as Base;
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\CustomerAddress;
 use Tests\Models\Post;
 use Tests\Models\User;
+use Tests\Models\VendorCustomer;
+use Tests\Models\VendorCustomerAddress;
 
 abstract class TestCase extends Base
 {
@@ -61,6 +64,20 @@ abstract class TestCase extends Base
             $table->unsignedInteger('custom_post_id')->nullable();
             $table->unsignedInteger('parent_id')->nullable();
         });
+
+        DB::schema()->create('vendor_customers', function (Blueprint $table) {
+            $table->increments('id');
+        });
+
+        DB::schema()->create('customer_addresses', function (Blueprint $table) {
+            $table->increments('id');
+        });
+
+        DB::schema()->create('vendor_customer_addresses', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('vendor_customer_id');
+            $table->unsignedInteger('customer_address_id');
+        });
     }
 
     /**
@@ -90,6 +107,17 @@ abstract class TestCase extends Base
         Comment::create(['id' => 33, 'post_id' => 23, 'custom_post_id' => null, 'parent_id' => null]);
         Comment::create(['id' => 34, 'post_id' => null, 'custom_post_id' => 21, 'parent_id' => 33]);
         Comment::create(['id' => 35, 'post_id' => null, 'custom_post_id' => 24, 'parent_id' => 34]);
+
+        VendorCustomer::create(['id' => 41]);
+        VendorCustomer::create(['id' => 42]);
+        VendorCustomer::create(['id' => 43]);
+
+        CustomerAddress::create(['id' => 51]);
+        CustomerAddress::create(['id' => 52]);
+        CustomerAddress::create(['id' => 53]);
+
+        VendorCustomerAddress::create(['id' => 61, 'vendor_customer_id' => 41, 'customer_address_id' => 51]);
+        VendorCustomerAddress::create(['id' => 62, 'vendor_customer_id' => 42, 'customer_address_id' => 52]);
 
         Model::reguard();
     }
