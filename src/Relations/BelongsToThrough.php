@@ -43,6 +43,13 @@ class BelongsToThrough extends Relation
     protected $foreignKeyLookup;
 
     /**
+     * The custom foreign keys on the relationship.
+     *
+     * @var array
+     */
+    protected $localKeyLookup;
+
+    /**
      * Create a new belongs to through relationship instance.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -51,13 +58,16 @@ class BelongsToThrough extends Relation
      * @param string|null $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
+     * @param array $localKeyLookup
+     *
      * @return void
      */
-    public function __construct(Builder $query, Model $parent, array $throughParents, $localKey = null, $prefix = '', array $foreignKeyLookup = [])
+    public function __construct(Builder $query, Model $parent, array $throughParents, $localKey = null, $prefix = '', array $foreignKeyLookup = [], array $localKeyLookup = [])
     {
         $this->throughParents = $throughParents;
         $this->prefix = $prefix;
         $this->foreignKeyLookup = $foreignKeyLookup;
+        $this->localKeyLookup = $localKeyLookup;
 
         parent::__construct($query, $parent);
     }
@@ -93,14 +103,14 @@ class BelongsToThrough extends Relation
 
             $first = $model->qualifyColumn($this->getForeignKeyName($predecessor));
 
-            $second = $predecessor->getQualifiedKeyName();
+            $second = $predecessor->qualifyColumn($this->getLocalKeyName($predecessor));
 
             $query->join($model->getTable(), $first, '=', $second);
 
             if ($this->hasSoftDeletes($model)) {
-                $column= $model->getQualifiedDeletedAtColumn();
+                $column = $model->getQualifiedDeletedAtColumn();
 
-                $query->withGlobalScope(__CLASS__ . ":$column", function (Builder $query) use ($column) {
+                $query->withGlobalScope(__CLASS__ . ":{$column}", function (Builder $query) use ($column) {
                     $query->whereNull($column);
                 });
             }
@@ -121,7 +131,23 @@ class BelongsToThrough extends Relation
             return $this->foreignKeyLookup[$table];
         }
 
-        return Str::singular($table).'_id';
+        return Str::singular($table) . '_id';
+    }
+
+    /**
+     * Get the foreign key for a model.
+     *
+     * @return string
+     */
+    public function getLocalKeyName(Model $model = null)
+    {
+        $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
+
+        if (array_key_exists($table, $this->localKeyLookup)) {
+            return $this->localKeyLookup[$table];
+        }
+
+        return 'id';
     }
 
     /**
@@ -225,7 +251,7 @@ class BelongsToThrough extends Relation
     public function first($columns = ['*'])
     {
         if ($columns === ['*']) {
-            $columns = [$this->related->getTable().'.*'];
+            $columns = [$this->related->getTable() . '.*'];
         }
 
         return $this->query->first($columns);
@@ -242,10 +268,10 @@ class BelongsToThrough extends Relation
         $columns = $this->query->getQuery()->columns ? [] : $columns;
 
         if ($columns === ['*']) {
-            $columns = [$this->related->getTable().'.*'];
+            $columns = [$this->related->getTable() . '.*'];
         }
 
-        $columns[] = $this->getQualifiedFirstLocalKeyName().' as '.static::THROUGH_KEY;
+        $columns[] = $this->getQualifiedFirstLocalKeyName() . ' as ' . static::THROUGH_KEY;
 
         $this->query->addSelect($columns);
 
@@ -264,7 +290,7 @@ class BelongsToThrough extends Relation
     {
         $this->performJoins($query);
 
-        $foreignKey = $parent->getQuery()->from.'.'.$this->getFirstForeignKeyName();
+        $foreignKey = $parent->getQuery()->from . '.' . $this->getFirstForeignKeyName();
 
         return $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
@@ -315,17 +341,17 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        return $this->prefix.$this->getForeignKeyName(end($this->throughParents));
+        return $this->prefix . $this->getForeignKeyName(end($this->throughParents));
     }
 
     /**
-     * Get the qualified local key for the first "through" parent model.
-     *
-     * @return string
-     */
+      * Get the qualified local key for the first "through" parent model.
+      *
+      * @return string
+      */
     public function getQualifiedFirstLocalKeyName()
     {
-        return end($this->throughParents)->getQualifiedKeyName();
+        return end($this->throughParents)->qualifyColumn($this->getLocalKeyName(end($this->throughParents)));
     }
 
     /**

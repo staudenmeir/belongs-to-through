@@ -16,13 +16,16 @@ trait BelongsToThrough
      * @param string|null $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
+     * @param mixed $localKeyLookup
+     *
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [])
+    public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [], $localKeyLookup = [])
     {
         $relatedInstance = $this->newRelatedInstance($related);
-        $throughParents = [];
-        $foreignKeys = [];
+        $throughParents  = [];
+        $foreignKeys     = [];
+        $localKeys       = [];
 
         foreach ((array) $through as $model) {
             $foreignKey = null;
@@ -50,13 +53,22 @@ trait BelongsToThrough
             }
         }
 
-        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys);
+        foreach ($localKeyLookup as $model => $localKey) {
+            $instance = new $model();
+
+            if ($localKey) {
+                $localKeys[$instance->getTable()] = $localKey;
+            }
+        }
+
+        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys, $localKeys);
     }
 
     /**
      * Create a through parent instance for a belongs-to-through relationship.
      *
      * @param string $model
+     *
      * @return \Illuminate\Database\Eloquent\Model
      */
     protected function belongsToThroughParentInstance($model)
@@ -67,7 +79,7 @@ trait BelongsToThrough
         $instance = new $segments[0]();
 
         if (isset($segments[1])) {
-            $instance->setTable($instance->getTable().' as '.$segments[1]);
+            $instance->setTable($instance->getTable() . ' as ' . $segments[1]);
         }
 
         return $instance;
@@ -82,10 +94,12 @@ trait BelongsToThrough
      * @param string $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
+     * @param array $localKeyLookup
+     * 
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup)
+    protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup, array $localKeyLookup)
     {
-        return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup);
+        return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup, $localKeyLookup);
     }
 }
