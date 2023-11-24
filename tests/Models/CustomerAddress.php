@@ -9,7 +9,7 @@ class CustomerAddress extends Model
     public function vendorCustomer(): BelongsToThrough
     {
         return $this->belongsToThrough(
-            VendorCustomer::class, 
+            VendorCustomer::class,
             VendorCustomerAddress::class,
             foreignKeyLookup: [VendorCustomerAddress::class => 'id'],
             localKeyLookup: [VendorCustomerAddress::class => 'customer_address_id'],

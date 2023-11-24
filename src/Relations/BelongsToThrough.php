@@ -43,7 +43,7 @@ class BelongsToThrough extends Relation
     protected $foreignKeyLookup;
 
     /**
-     * The custom foreign keys on the relationship.
+     * The custom local keys on the relationship.
      *
      * @var array
      */
@@ -62,8 +62,15 @@ class BelongsToThrough extends Relation
      *
      * @return void
      */
-    public function __construct(Builder $query, Model $parent, array $throughParents, $localKey = null, $prefix = '', array $foreignKeyLookup = [], array $localKeyLookup = [])
-    {
+    public function __construct(
+        Builder $query,
+        Model $parent,
+        array $throughParents,
+        $localKey = null,
+        $prefix = '',
+        array $foreignKeyLookup = [],
+        array $localKeyLookup = []
+    ) {
         $this->throughParents = $throughParents;
         $this->prefix = $prefix;
         $this->foreignKeyLookup = $foreignKeyLookup;
@@ -135,11 +142,12 @@ class BelongsToThrough extends Relation
     }
 
     /**
-     * Get the foreign key for a model.
+     * Get the local key for a model.
      *
+     * @param \Illuminate\Database\Eloquent\Model|null $model
      * @return string
      */
-    public function getLocalKeyName(Model $model = null)
+    public function getLocalKeyName(Model $model = null): string
     {
         $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
 
@@ -345,10 +353,10 @@ class BelongsToThrough extends Relation
     }
 
     /**
-      * Get the qualified local key for the first "through" parent model.
-      *
-      * @return string
-      */
+     * Get the qualified local key for the first "through" parent model.
+     *
+     * @return string
+     */
     public function getQualifiedFirstLocalKeyName()
     {
         return end($this->throughParents)->qualifyColumn($this->getLocalKeyName(end($this->throughParents)));

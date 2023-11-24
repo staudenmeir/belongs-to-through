@@ -16,12 +16,17 @@ trait BelongsToThrough
      * @param string|null $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
-     * @param mixed $localKeyLookup
-     *
+     * @param array  $localKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [], $localKeyLookup = [])
-    {
+    public function belongsToThrough(
+        $related,
+        $through,
+        $localKey = null,
+        $prefix = '',
+        $foreignKeyLookup = [],
+        array $localKeyLookup = []
+    ) {
         $relatedInstance = $this->newRelatedInstance($related);
         $throughParents  = [];
         $foreignKeys     = [];
@@ -48,7 +53,15 @@ trait BelongsToThrough
 
         $localKeys = $this->mapKeys($localKeyLookup);
 
-        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys, $localKeys);
+        return $this->newBelongsToThrough(
+            $relatedInstance->newQuery(),
+            $this,
+            $throughParents,
+            $localKey,
+            $prefix,
+            $foreignKeys,
+            $localKeys
+        );
     }
 
     /**
@@ -57,7 +70,7 @@ trait BelongsToThrough
      * @param array $keyLookup
      * @return array
      */
-    protected function mapKeys(array $keyLookup)
+    protected function mapKeys(array $keyLookup): array
     {
         $keys = [];
 
@@ -77,7 +90,6 @@ trait BelongsToThrough
      * Create a through parent instance for a belongs-to-through relationship.
      *
      * @param string $model
-     *
      * @return \Illuminate\Database\Eloquent\Model
      */
     protected function belongsToThroughParentInstance($model)
@@ -104,11 +116,17 @@ trait BelongsToThrough
      * @param string $prefix
      * @param array $foreignKeyLookup
      * @param array $localKeyLookup
-     *
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup, array $localKeyLookup)
-    {
+    protected function newBelongsToThrough(
+        Builder $query,
+        Model $parent,
+        array $throughParents,
+        $localKey,
+        $prefix,
+        array $foreignKeyLookup,
+        array $localKeyLookup
+    ) {
         return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup, $localKeyLookup);
     }
 }
