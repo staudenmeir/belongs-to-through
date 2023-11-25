@@ -155,7 +155,7 @@ class BelongsToThrough extends Relation
             return $this->localKeyLookup[$table];
         }
 
-        return 'id';
+        return $model->getKeyName();
     }
 
     /**
@@ -359,7 +359,9 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
-        return end($this->throughParents)->qualifyColumn($this->getLocalKeyName(end($this->throughParents)));
+        $lastThroughParent = end($this->throughParents);
+
+        return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
     }
 
     /**
