@@ -21,6 +21,8 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 
 ## Usage
 
+- [Custom Foreign Keys](#custom-foreign-keys)
+- [Custom Local Keys](#custom-local-keys)
 - [Table Aliases](#table-aliases)
 - [Soft Deleting](#soft-deleting)
 
@@ -69,6 +71,8 @@ class Comment extends Model
 }
 ```
 
+### Custom Foreign Keys
+
 You can specify custom foreign keys as the fifth argument:
 
 ```php
@@ -88,6 +92,8 @@ class Comment extends Model
     }
 }
 ```
+
+### Custom Local Keys
 
 You can specify custom local keys for the relations:
 
