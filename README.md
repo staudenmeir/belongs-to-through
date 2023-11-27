@@ -21,6 +21,9 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 
 ## Usage
 
+- [Table Aliases](#table-aliases)
+- [Soft Deleting](#soft-deleting)
+
 Consider this `HasManyThrough` relationship:  
 `Country` → has many → `User` → has many → `Post`
 
