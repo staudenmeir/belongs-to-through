@@ -4,8 +4,10 @@ namespace Tests;
 
 use Tests\Models\Comment;
 use Tests\Models\Country;
+use Tests\Models\CustomerAddress;
 use Tests\Models\Post;
 use Tests\Models\User;
+use Tests\Models\VendorCustomer;
 
 class BelongsToThroughTest extends TestCase
 {
@@ -133,5 +135,15 @@ class BelongsToThroughTest extends TestCase
         $this->assertCount(2, $throughParents);
         $this->assertInstanceOf(User::class, $throughParents[0]);
         $this->assertInstanceOf(Post::class, $throughParents[1]);
+    }
+
+    public function testGetThroughWithCustomizedLocalKeys()
+    {
+        $addresses = CustomerAddress::with('vendorCustomer')->get();
+
+        $this->assertEquals(41, $addresses[0]->vendorCustomer->id);
+        $this->assertEquals(42, $addresses[1]->vendorCustomer->id);
+        $this->assertInstanceOf(VendorCustomer::class, $addresses[1]->vendorCustomer);
+        $this->assertFalse($addresses[2]->vendorCustomer()->exists());
     }
 }

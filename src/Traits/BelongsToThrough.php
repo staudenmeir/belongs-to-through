@@ -16,13 +16,20 @@ trait BelongsToThrough
      * @param string|null $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
+     * @param array  $localKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    public function belongsToThrough($related, $through, $localKey = null, $prefix = '', $foreignKeyLookup = [])
-    {
+    public function belongsToThrough(
+        $related,
+        $through,
+        $localKey = null,
+        $prefix = '',
+        $foreignKeyLookup = [],
+        array $localKeyLookup = []
+    ) {
         $relatedInstance = $this->newRelatedInstance($related);
-        $throughParents = [];
-        $foreignKeys = [];
+        $throughParents  = [];
+        $foreignKeys     = [];
 
         foreach ((array) $through as $model) {
             $foreignKey = null;
@@ -42,15 +49,41 @@ trait BelongsToThrough
             $throughParents[] = $instance;
         }
 
-        foreach ($foreignKeyLookup as $model => $foreignKey) {
+        $foreignKeys = array_merge($foreignKeys, $this->mapKeys($foreignKeyLookup));
+
+        $localKeys = $this->mapKeys($localKeyLookup);
+
+        return $this->newBelongsToThrough(
+            $relatedInstance->newQuery(),
+            $this,
+            $throughParents,
+            $localKey,
+            $prefix,
+            $foreignKeys,
+            $localKeys
+        );
+    }
+
+    /**
+     * Map keys to an associative array where the key is the table name and the value is the key from the lookup.
+     *
+     * @param array $keyLookup
+     * @return array
+     */
+    protected function mapKeys(array $keyLookup): array
+    {
+        $keys = [];
+
+        // Iterate over each model and key in the key lookup
+        foreach ($keyLookup as $model => $key) {
+            // Create a new instance of the model
             $instance = new $model();
 
-            if ($foreignKey) {
-                $foreignKeys[$instance->getTable()] = $foreignKey;
-            }
+            // Add the table name and key to the keys array
+            $keys[$instance->getTable()] = $key;
         }
 
-        return $this->newBelongsToThrough($relatedInstance->newQuery(), $this, $throughParents, $localKey, $prefix, $foreignKeys);
+        return $keys;
     }
 
     /**
@@ -67,7 +100,7 @@ trait BelongsToThrough
         $instance = new $segments[0]();
 
         if (isset($segments[1])) {
-            $instance->setTable($instance->getTable().' as '.$segments[1]);
+            $instance->setTable($instance->getTable() . ' as ' . $segments[1]);
         }
 
         return $instance;
@@ -82,10 +115,18 @@ trait BelongsToThrough
      * @param string $localKey
      * @param string $prefix
      * @param array $foreignKeyLookup
+     * @param array $localKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough
      */
-    protected function newBelongsToThrough(Builder $query, Model $parent, array $throughParents, $localKey, $prefix, array $foreignKeyLookup)
-    {
-        return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup);
+    protected function newBelongsToThrough(
+        Builder $query,
+        Model $parent,
+        array $throughParents,
+        $localKey,
+        $prefix,
+        array $foreignKeyLookup,
+        array $localKeyLookup
+    ) {
+        return new Relation($query, $parent, $throughParents, $localKey, $prefix, $foreignKeyLookup, $localKeyLookup);
     }
 }
