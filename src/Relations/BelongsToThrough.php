@@ -144,12 +144,12 @@ class BelongsToThrough extends Relation
     /**
      * Get the local key for a model.
      *
-     * @param \Illuminate\Database\Eloquent\Model|null $model
+     * @param \Illuminate\Database\Eloquent\Model $model
      * @return string
      */
-    public function getLocalKeyName(Model $model = null): string
+    public function getLocalKeyName(Model $model): string
     {
-        $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
+        $table = explode(' as ', $model->getTable())[0];
 
         if (array_key_exists($table, $this->localKeyLookup)) {
             return $this->localKeyLookup[$table];
