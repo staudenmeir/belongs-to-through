@@ -17,11 +17,14 @@
         "illuminate/database": "^10.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.13",
+        "orchestra/testbench": "^8.17",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.1"
     },
     "autoload": {
         "psr-4": {
+            "Staudenmeir\\BelongsToThrough\\": "src/",
             "Znck\\Eloquent\\": "src/"
         }
     },
@@ -32,6 +35,13 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Staudenmeir\\BelongsToThrough\\IdeHelperServiceProvider"
+            ]
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
