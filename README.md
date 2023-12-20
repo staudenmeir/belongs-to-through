@@ -85,9 +85,7 @@ class Comment extends Model
         return $this->belongsToThrough(
             Country::class,
             [User::class, Post::class], 
-            null,
-            '',
-            [User::class => 'custom_user_id']
+            foreignKeyLookup: [User::class => 'custom_user_id']
         );
     }
 }
