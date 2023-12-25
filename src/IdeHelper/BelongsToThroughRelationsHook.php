@@ -19,7 +19,7 @@ class BelongsToThroughRelationsHook implements ModelHookInterface
         $traits = class_uses_recursive($model);
 
         if (!in_array(BelongsToThroughTrait::class, $traits)) {
-            return;
+            return; // @codeCoverageIgnore
         }
 
         $methods = (new ReflectionClass($model))->getMethods(ReflectionMethod::IS_PUBLIC);
@@ -32,8 +32,8 @@ class BelongsToThroughRelationsHook implements ModelHookInterface
 
             try {
                 $relationship = $method->invoke($model);
-            } catch (Throwable) {
-                continue;
+            } catch (Throwable) { // @codeCoverageIgnore
+                continue; // @codeCoverageIgnore
             }
 
             if ($relationship instanceof BelongsToThroughRelation) {
