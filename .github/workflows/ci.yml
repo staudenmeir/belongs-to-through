@@ -34,3 +34,7 @@ jobs:
           vendor/bin/phpunit $PHPUNIT_FLAGS
       - run: php tests/coverage/scrutinizer.php
         if: matrix.coverage == 'xdebug'
+      - uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        if: matrix.coverage == 'xdebug' && env.CODECOV_TOKEN
