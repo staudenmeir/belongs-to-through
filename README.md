@@ -19,6 +19,18 @@ Use this command if you are in PowerShell on Windows (e.g. in VS Code):
 
     composer require staudenmeir/belongs-to-through:"^^^^2.5"
 
+## Versions
+
+| Laravel | Package |
+|:--------|:--------|
+| 11.x    | 2.16    |
+| 10.x    | 2.13    |
+| 9.x     | 2.12    |
+| 8.x     | 2.11    |
+| 7.x     | 2.10    |
+| 6.x     | 2.6     |
+| 5.x     | 2.5     |
+
 ## Usage
 
 - [Custom Foreign Keys](#custom-foreign-keys)
