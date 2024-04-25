@@ -142,10 +142,8 @@ class Comment extends Model
     {
         return $this->belongsToThrough(
             Comment::class,
-            Comment::class . ' as alias', 
-            null,
-            '',
-            [Comment::class => 'parent_id']
+            Comment::class . ' as alias',
+            foreignKeyLookup: [Comment::class => 'parent_id']
         );
     }
 }
