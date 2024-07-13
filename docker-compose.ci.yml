@@ -21,8 +21,6 @@ services:
   php8.4:
     image: ghcr.io/staudenmeir/php:8.4
     working_dir: /var/www/html
-    networks:
-      - test
     volumes:
       - .:/var/www/html:delegated
       - ~/.cache/composer/files:/root/.composer/cache/files
