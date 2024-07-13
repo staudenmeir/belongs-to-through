@@ -101,7 +101,7 @@ class BelongsToThrough extends Relation
      * @param \Illuminate\Database\Eloquent\Builder|null $query
      * @return void
      */
-    protected function performJoins(Builder $query = null)
+    protected function performJoins(?Builder $query = null)
     {
         $query = $query ?: $this->query;
 
@@ -130,7 +130,7 @@ class BelongsToThrough extends Relation
      * @param \Illuminate\Database\Eloquent\Model|null $model
      * @return string
      */
-    public function getForeignKeyName(Model $model = null)
+    public function getForeignKeyName(?Model $model = null)
     {
         $table = explode(' as ', ($model ?? $this->parent)->getTable())[0];
 
