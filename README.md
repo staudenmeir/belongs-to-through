@@ -59,7 +59,7 @@ class Post extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function country()
+    public function country(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(Country::class, User::class);
     }
@@ -76,7 +76,7 @@ class Comment extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function country()
+    public function country(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class]);
     }
@@ -92,7 +92,7 @@ class Comment extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function country()
+    public function country(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(
             Country::class,
@@ -117,7 +117,7 @@ class CustomerAddress extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function vendorCustomer(): BelongsToThrough
+    public function vendorCustomer(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(
             VendorCustomer::class,
@@ -138,7 +138,7 @@ class Comment extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function grandparent()
+    public function grandparent(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(
             Comment::class,
@@ -167,7 +167,7 @@ class Comment extends Model
 {
     use \Znck\Eloquent\Traits\BelongsToThrough;
 
-    public function country()
+    public function country(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class])
             ->withTrashed('users.deleted_at');
