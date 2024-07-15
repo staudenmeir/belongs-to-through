@@ -2,10 +2,10 @@
 
 [![CI](https://github.com/staudenmeir/belongs-to-through/actions/workflows/ci.yml/badge.svg)](https://github.com/staudenmeir/belongs-to-through/actions/workflows/ci.yml)
 [![Code Coverage](https://codecov.io/gh/staudenmeir/belongs-to-through/graph/badge.svg?token=Z4KscVFWIE)](https://codecov.io/gh/staudenmeir/belongs-to-through)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/staudenmeir/belongs-to-through/?branch=main)
 [![Latest Stable Version](https://poser.pugx.org/staudenmeir/belongs-to-through/v/stable)](https://packagist.org/packages/staudenmeir/belongs-to-through)
 [![Total Downloads](https://poser.pugx.org/staudenmeir/belongs-to-through/downloads)](https://packagist.org/packages/staudenmeir/belongs-to-through/stats)
-[![License](https://poser.pugx.org/staudenmeir/belongs-to-through/license)](https://github.com/staudenmeir/belongs-to-through/blob/master/LICENSE)
+[![License](https://poser.pugx.org/staudenmeir/belongs-to-through/license)](https://github.com/staudenmeir/belongs-to-through/blob/main/LICENSE)
 
 This inverse version of `HasManyThrough` allows `BelongsToThrough` relationships with unlimited intermediate models.
 
