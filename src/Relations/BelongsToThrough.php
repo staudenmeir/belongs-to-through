@@ -59,8 +59,9 @@ class BelongsToThrough extends Relation
      * @param string $prefix
      * @param array $foreignKeyLookup
      * @param array $localKeyLookup
-     *
      * @return void
+     *
+     * @phpstan-ignore constructor.unusedParameter($localKey)
      */
     public function __construct(
         Builder $query,
