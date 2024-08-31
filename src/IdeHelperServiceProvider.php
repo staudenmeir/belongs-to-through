@@ -3,6 +3,7 @@
 namespace Staudenmeir\BelongsToThrough;
 
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Illuminate\Console\Command;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Staudenmeir\BelongsToThrough\IdeHelper\BelongsToThroughRelationsHook;
@@ -18,11 +19,14 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             'ide-helper.model_hooks',
             array_merge(
                 [BelongsToThroughRelationsHook::class],
-                $config->get('ide-helper.model_hooks', [])
+                $config->array('ide-helper.model_hooks', [])
             )
         );
     }
 
+    /**
+     * @return class-string<Command>[]
+     */
     public function provides(): array
     {
         return [

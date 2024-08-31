@@ -11,15 +11,17 @@ class IdeHelperServiceProviderTest extends TestCase
 {
     public function testAutoRegistrationOfModelHook(): void
     {
-        $this->app->loadDeferredProvider(BarryvdhIdeHelperServiceProvider::class);
-        $this->app->loadDeferredProvider(IdeHelperServiceProvider::class);
+        $this->app?->loadDeferredProvider(BarryvdhIdeHelperServiceProvider::class);
+        $this->app?->loadDeferredProvider(IdeHelperServiceProvider::class);
 
-        /** @var \Illuminate\Contracts\Config\Repository $config */
-        $config = $this->app->get('config');
+        /** @var \Illuminate\Contracts\Config\Repository|null $config */
+        $config = $this->app?->get('config');
+
+        $this->assertNotNull($config);
 
         $this->assertContains(
             BelongsToThroughRelationsHook::class,
-            $config->get('ide-helper.model_hooks'),
+            $config->array('ide-helper.model_hooks'),
         );
     }
 

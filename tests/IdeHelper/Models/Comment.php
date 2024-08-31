@@ -9,6 +9,9 @@ class Comment extends Model
 {
     use BelongsToThrough;
 
+    /**
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<Country, User|Post, $this>
+     */
     public function country()
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class]);

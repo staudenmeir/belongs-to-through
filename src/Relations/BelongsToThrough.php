@@ -8,8 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Concerns\SupportsDefaultModels;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
 
+/**
+ * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
+ * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
+ * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
+ *
+ * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
+ */
 class BelongsToThrough extends Relation
 {
     use SupportsDefaultModels;
@@ -24,7 +32,7 @@ class BelongsToThrough extends Relation
     /**
      * The "through" parent model instances.
      *
-     * @var \Illuminate\Database\Eloquent\Model[]
+     * @var TIntermediateModel[]
      */
     protected $throughParents;
 
@@ -38,27 +46,27 @@ class BelongsToThrough extends Relation
     /**
      * The custom foreign keys on the relationship.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $foreignKeyLookup;
 
     /**
      * The custom local keys on the relationship.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $localKeyLookup;
 
     /**
      * Create a new belongs to through relationship instance.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @param \Illuminate\Database\Eloquent\Model[] $throughParents
+     * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
+     * @param TDeclaringModel $parent
+     * @param TIntermediateModel[] $throughParents
      * @param string|null $localKey
      * @param string $prefix
-     * @param array $foreignKeyLookup
-     * @param array $localKeyLookup
+     * @param array<string, string> $foreignKeyLookup
+     * @param array<string, string> $localKeyLookup
      * @return void
      *
      * @phpstan-ignore constructor.unusedParameter($localKey)
@@ -99,7 +107,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the join clauses on the query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|null $query
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>|null $query
      * @return void
      */
     protected function performJoins(?Builder $query = null)
@@ -116,6 +124,7 @@ class BelongsToThrough extends Relation
             $query->join($model->getTable(), $first, '=', $second);
 
             if ($this->hasSoftDeletes($model)) {
+                /** @phpstan-ignore method.notFound */
                 $column = $model->getQualifiedDeletedAtColumn();
 
                 $query->withGlobalScope(__CLASS__ . ":{$column}", function (Builder $query) use ($column) {
@@ -173,7 +182,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param array $models
+     * @param \Illuminate\Database\Eloquent\Model[] $models
      * @return void
      */
     public function addEagerConstraints(array $models)
@@ -188,7 +197,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Model[] $models
      * @param string $relation
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Model[]
      */
     public function initRelation(array $models, $relation)
     {
@@ -203,9 +212,9 @@ class BelongsToThrough extends Relation
      * Match the eagerly loaded results to their parents.
      *
      * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param \Illuminate\Database\Eloquent\Collection $results
+     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
      * @param string $relation
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Model[]
      */
     public function match(array $models, Collection $results, $relation)
     {
@@ -225,8 +234,8 @@ class BelongsToThrough extends Relation
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
-     * @param \Illuminate\Database\Eloquent\Collection $results
-     * @return array
+     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
+     * @return \Illuminate\Database\Eloquent\Model[]
      */
     protected function buildDictionary(Collection $results)
     {
@@ -244,7 +253,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the results of the relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return TRelatedModel|object|static|null
      */
     public function getResults()
     {
@@ -254,8 +263,8 @@ class BelongsToThrough extends Relation
     /**
      * Execute the query and get the first result.
      *
-     * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Model|object|static|null
+     * @param string[] $columns
+     * @return TRelatedModel|object|static|null
      */
     public function first($columns = ['*'])
     {
@@ -269,8 +278,8 @@ class BelongsToThrough extends Relation
     /**
      * Execute the query as a "select" statement.
      *
-     * @param array $columns
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param string[] $columns
+     * @return \Illuminate\Database\Eloquent\Collection<array-key, TRelatedModel>
      */
     public function get($columns = ['*'])
     {
@@ -290,16 +299,22 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $query
-     * @param \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder $parent
-     * @param array|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parent
+     * @param string[]|mixed $columns
+     * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
     {
         $this->performJoins($query);
 
-        $foreignKey = $parent->getQuery()->from . '.' . $this->getFirstForeignKeyName();
+        $from = $parent->getQuery()->from;
+
+        if ($from instanceof Expression) {
+            $from = $from->getValue($query->getGrammar());
+        }
+
+        $foreignKey = $from . '.' . $this->getFirstForeignKeyName();
 
         return $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
@@ -311,12 +326,13 @@ class BelongsToThrough extends Relation
     /**
      * Restore soft-deleted models.
      *
-     * @param array|string ...$columns
+     * @param string[]|string ...$columns
      * @return $this
      */
     public function withTrashed(...$columns)
     {
         if (empty($columns)) {
+            /** @phpstan-ignore method.notFound */
             $this->query->withTrashed();
 
             return $this;
@@ -326,6 +342,7 @@ class BelongsToThrough extends Relation
             $columns = $columns[0];
         }
 
+        /** @var string[] $columns */
         foreach ($columns as $column) {
             $this->query->withoutGlobalScope(__CLASS__ . ":$column");
         }
@@ -336,7 +353,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the "through" parent model instances.
      *
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return TIntermediateModel[]
      */
     public function getThroughParents()
     {
@@ -350,7 +367,11 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        return $this->prefix . $this->getForeignKeyName(end($this->throughParents));
+        // TODO: the method docblock doesn't match with the usage of `end($this->throughParents)`
+        /** @var TIntermediateModel $lastThroughParent */
+        $lastThroughParent = end($this->throughParents);
+
+        return $this->prefix . $this->getForeignKeyName($lastThroughParent);
     }
 
     /**
@@ -360,6 +381,7 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
+        /** @var TIntermediateModel $lastThroughParent */
         $lastThroughParent = end($this->throughParents);
 
         return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
