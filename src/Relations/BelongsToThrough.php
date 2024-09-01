@@ -367,11 +367,10 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        // TODO: the method docblock doesn't match with the usage of `end($this->throughParents)`
-        /** @var TIntermediateModel $lastThroughParent */
-        $lastThroughParent = end($this->throughParents);
+        /** @var TIntermediateModel $firstThroughParent */
+        $firstThroughParent = end($this->throughParents);
 
-        return $this->prefix . $this->getForeignKeyName($lastThroughParent);
+        return $this->prefix . $this->getForeignKeyName($firstThroughParent);
     }
 
     /**
