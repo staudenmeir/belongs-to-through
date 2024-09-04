@@ -13,6 +13,7 @@ trait BelongsToThrough
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
+     * @template TIntermediateModels of list<TIntermediateModel>
      *
      * @param class-string<TRelatedModel> $related
      * @param class-string<TIntermediateModel>[]|array{0: class-string<TIntermediateModel>, 1: string}[]|class-string<TIntermediateModel> $through
@@ -20,7 +21,7 @@ trait BelongsToThrough
      * @param string $prefix
      * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $foreignKeyLookup
      * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $localKeyLookup
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModel, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModels, $this>
      */
     public function belongsToThrough(
         $related,
@@ -33,7 +34,7 @@ trait BelongsToThrough
         /** @var TRelatedModel $relatedInstance */
         $relatedInstance = $this->newRelatedInstance($related);
 
-        /** @var TIntermediateModel[] $throughParents */
+        /** @var TIntermediateModels $throughParents */
         $throughParents  = [];
         $foreignKeys     = [];
 
@@ -122,17 +123,17 @@ trait BelongsToThrough
      * Instantiate a new BelongsToThrough relationship.
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
-     * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
+     * @template TIntermediateModels of list<\Illuminate\Database\Eloquent\Model>
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param TIntermediateModel[] $throughParents
+     * @param TIntermediateModels $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
      * @param array<string, string> $localKeyLookup
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModel, TDeclaringModel>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModels, TDeclaringModel>
      */
     protected function newBelongsToThrough(
         Builder $query,

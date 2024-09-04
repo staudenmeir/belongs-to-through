@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
- * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
+ * @template TIntermediateModels of list<\Illuminate\Database\Eloquent\Model>
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
  * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
@@ -32,7 +32,7 @@ class BelongsToThrough extends Relation
     /**
      * The "through" parent model instances.
      *
-     * @var TIntermediateModel[]
+     * @var TIntermediateModels
      */
     protected $throughParents;
 
@@ -62,7 +62,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param TIntermediateModel[] $throughParents
+     * @param TIntermediateModels $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
@@ -91,7 +91,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the base constraints on the relation query.
      *
-     * @return void
+     * @inheritDoc
      */
     public function addConstraints()
     {
@@ -182,8 +182,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @return void
+     * @inheritDoc
      */
     public function addEagerConstraints(array $models)
     {
@@ -195,9 +194,7 @@ class BelongsToThrough extends Relation
     /**
      * Initialize the relation on a set of models.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param string $relation
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @inheritDoc
      */
     public function initRelation(array $models, $relation)
     {
@@ -211,10 +208,7 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
-     * @param string $relation
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @inheritDoc
      */
     public function match(array $models, Collection $results, $relation)
     {
@@ -234,8 +228,8 @@ class BelongsToThrough extends Relation
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
-     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @return TRelatedModel[]
      */
     protected function buildDictionary(Collection $results)
     {
@@ -253,6 +247,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the results of the relationship.
      *
+     * @inheritDoc
      * @return TRelatedModel|object|static|null
      */
     public function getResults()
@@ -263,6 +258,7 @@ class BelongsToThrough extends Relation
     /**
      * Execute the query and get the first result.
      *
+     * @inheritDoc
      * @param string[] $columns
      * @return TRelatedModel|object|static|null
      */
@@ -278,8 +274,7 @@ class BelongsToThrough extends Relation
     /**
      * Execute the query as a "select" statement.
      *
-     * @param string[] $columns
-     * @return \Illuminate\Database\Eloquent\Collection<array-key, TRelatedModel>
+     * @inheritDoc
      */
     public function get($columns = ['*'])
     {
@@ -299,10 +294,7 @@ class BelongsToThrough extends Relation
     /**
      * Add the constraints for a relationship query.
      *
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parentQuery
-     * @param string[]|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
+     * @inheritDoc
      */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
@@ -358,7 +350,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the "through" parent model instances.
      *
-     * @return TIntermediateModel[]
+     * @return TIntermediateModels
      */
     public function getThroughParents()
     {
@@ -372,7 +364,7 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        /** @var TIntermediateModel $firstThroughParent */
+        /** @var \Illuminate\Database\Eloquent\Model $firstThroughParent */
         $firstThroughParent = end($this->throughParents);
 
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
@@ -385,7 +377,7 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
-        /** @var TIntermediateModel $lastThroughParent */
+        /** @var \Illuminate\Database\Eloquent\Model $lastThroughParent */
         $lastThroughParent = end($this->throughParents);
 
         return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
@@ -394,8 +386,7 @@ class BelongsToThrough extends Relation
     /**
      * Make a new related instance for the given model.
      *
-     * @param \Illuminate\Database\Eloquent\Model $parent
-     * @return \Illuminate\Database\Eloquent\Model
+     * @inheritDoc
      */
     protected function newRelatedInstanceFor(Model $parent)
     {
