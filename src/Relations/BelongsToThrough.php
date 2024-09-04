@@ -182,7 +182,7 @@ class BelongsToThrough extends Relation
     /**
      * Set the constraints for an eager load of the relation.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param array<int, TDeclaringModel> $models
      * @return void
      */
     public function addEagerConstraints(array $models)
@@ -195,9 +195,9 @@ class BelongsToThrough extends Relation
     /**
      * Initialize the relation on a set of models.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
+     * @param array<int, TDeclaringModel> $models
      * @param string $relation
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return array<int, TDeclaringModel>
      */
     public function initRelation(array $models, $relation)
     {
@@ -211,10 +211,10 @@ class BelongsToThrough extends Relation
     /**
      * Match the eagerly loaded results to their parents.
      *
-     * @param \Illuminate\Database\Eloquent\Model[] $models
-     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
+     * @param array<int, TDeclaringModel> $models
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
      * @param string $relation
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @return array<int, TDeclaringModel>
      */
     public function match(array $models, Collection $results, $relation)
     {
