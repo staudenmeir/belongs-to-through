@@ -310,7 +310,7 @@ class BelongsToThrough extends Relation
 
         $foreignKey = $from . '.' . $this->getFirstForeignKeyName();
 
-        /** @var \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query */
+        /** @var \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query */
         $query = $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
             '=',
@@ -387,6 +387,9 @@ class BelongsToThrough extends Relation
      * Make a new related instance for the given model.
      *
      * @inheritDoc
+     *
+     * @param \Illuminate\Database\Eloquent\Model $parent
+     * @return \Illuminate\Database\Eloquent\Model
      */
     protected function newRelatedInstanceFor(Model $parent)
     {
