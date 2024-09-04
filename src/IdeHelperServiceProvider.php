@@ -18,11 +18,14 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
             'ide-helper.model_hooks',
             array_merge(
                 [BelongsToThroughRelationsHook::class],
-                $config->get('ide-helper.model_hooks', [])
+                $config->array('ide-helper.model_hooks', [])
             )
         );
     }
 
+    /**
+     * @return class-string<\Illuminate\Console\Command>[]
+     */
     public function provides(): array
     {
         return [

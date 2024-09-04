@@ -3,13 +3,17 @@
 namespace Tests\IdeHelper\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Znck\Eloquent\Traits\BelongsToThrough;
+use Znck\Eloquent\Relations\BelongsToThrough as BelongsToThroughRelation;
+use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
 class Comment extends Model
 {
-    use BelongsToThrough;
+    use BelongsToThroughTrait;
 
-    public function country()
+    /**
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\IdeHelper\Models\Country, \Tests\IdeHelper\Models\User|\Tests\IdeHelper\Models\Post, $this>
+     */
+    public function country(): BelongsToThroughRelation
     {
         return $this->belongsToThrough(Country::class, [User::class, Post::class]);
     }
