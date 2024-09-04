@@ -88,11 +88,7 @@ class BelongsToThrough extends Relation
         parent::__construct($query, $parent);
     }
 
-    /**
-     * Set the base constraints on the relation query.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function addConstraints()
     {
         $this->performJoins();
@@ -179,11 +175,7 @@ class BelongsToThrough extends Relation
         return in_array(SoftDeletes::class, class_uses_recursive($model));
     }
 
-    /**
-     * Set the constraints for an eager load of the relation.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
         $keys = $this->getKeys($models, $this->getFirstForeignKeyName());
@@ -191,11 +183,7 @@ class BelongsToThrough extends Relation
         $this->query->whereIn($this->getQualifiedFirstLocalKeyName(), $keys);
     }
 
-    /**
-     * Initialize the relation on a set of models.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
@@ -205,11 +193,7 @@ class BelongsToThrough extends Relation
         return $models;
     }
 
-    /**
-     * Match the eagerly loaded results to their parents.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function match(array $models, Collection $results, $relation)
     {
         $dictionary = $this->buildDictionary($results);
@@ -244,12 +228,7 @@ class BelongsToThrough extends Relation
         return $dictionary;
     }
 
-    /**
-     * Get the results of the relationship.
-     *
-     * @inheritDoc
-     * @return TRelatedModel|object|static|null
-     */
+    /** @inheritDoc */
     public function getResults()
     {
         return $this->first() ?: $this->getDefaultFor($this->parent);
@@ -271,11 +250,7 @@ class BelongsToThrough extends Relation
         return $this->query->first($columns);
     }
 
-    /**
-     * Execute the query as a "select" statement.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function get($columns = ['*'])
     {
         $columns = $this->query->getQuery()->columns ? [] : $columns;
@@ -291,11 +266,7 @@ class BelongsToThrough extends Relation
         return $this->query->get();
     }
 
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
         $this->performJoins($query);
