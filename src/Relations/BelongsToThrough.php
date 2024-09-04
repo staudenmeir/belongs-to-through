@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
@@ -341,7 +342,7 @@ class BelongsToThrough extends Relation
         $firstThroughParent = end($this->throughParents);
 
         if ($firstThroughParent === false) {
-            $firstThroughParent = $this->parent;
+            throw new RuntimeException('No "through" parent models were specified.');
         }
 
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
@@ -357,7 +358,7 @@ class BelongsToThrough extends Relation
         $lastThroughParent = end($this->throughParents);
 
         if ($lastThroughParent === false) {
-            $lastThroughParent = $this->parent;
+            throw new RuntimeException('No "through" parent models were specified.');
         }
 
         return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
