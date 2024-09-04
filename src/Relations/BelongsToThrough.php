@@ -335,8 +335,11 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        /** @var \Illuminate\Database\Eloquent\Model $firstThroughParent */
         $firstThroughParent = end($this->throughParents);
+
+        if ($firstThroughParent === false) {
+            $firstThroughParent = $this->parent;
+        }
 
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
     }
@@ -348,8 +351,11 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
-        /** @var \Illuminate\Database\Eloquent\Model $lastThroughParent */
         $lastThroughParent = end($this->throughParents);
+
+        if ($lastThroughParent === false) {
+            $lastThroughParent = $this->parent;
+        }
 
         return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
     }
