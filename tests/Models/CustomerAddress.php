@@ -7,7 +7,7 @@ use Znck\Eloquent\Relations\BelongsToThrough;
 class CustomerAddress extends Model
 {
     /**
-     * @return BelongsToThrough<VendorCustomer, VendorCustomerAddress, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\VendorCustomer, \Tests\Models\VendorCustomerAddress, $this>
      */
     public function vendorCustomer(): BelongsToThrough
     {

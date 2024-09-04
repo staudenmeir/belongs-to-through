@@ -43,7 +43,7 @@ class BelongsToThroughRelationsHook implements ModelHookInterface
     }
 
     /**
-     * @param Relation<\Illuminate\Database\Eloquent\Model> $relationship
+     * @param \Illuminate\Database\Eloquent\Relations\Relation<\Illuminate\Database\Eloquent\Model> $relationship
      */
     protected function addRelationship(ModelsCommand $command, ReflectionMethod $method, Relation $relationship): void
     {

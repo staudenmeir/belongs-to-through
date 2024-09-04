@@ -300,18 +300,20 @@ class BelongsToThrough extends Relation
      * Add the constraints for a relationship query.
      *
      * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parent
+     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parentQuery
      * @param string[]|mixed $columns
      * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
      */
-    public function getRelationExistenceQuery(Builder $query, Builder $parent, $columns = ['*'])
+    public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
         $this->performJoins($query);
 
-        $from = $parent->getQuery()->from;
+        $from = $parentQuery->getQuery()->from;
 
         if ($from instanceof Expression) {
-            $from = $from->getValue($query->getGrammar());
+            $from = $from->getValue(
+                $parentQuery->getGrammar()
+            );
         }
 
         $foreignKey = $from . '.' . $this->getFirstForeignKeyName();

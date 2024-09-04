@@ -15,7 +15,7 @@ class Comment extends Model
     use HasTableAlias;
 
     /**
-     * @return BelongsToThrough<Country, User|Post, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, \Tests\Models\User|\Tests\Models\Post, $this>
      */
     public function country(): BelongsToThrough
     {
@@ -23,7 +23,7 @@ class Comment extends Model
     }
 
     /**
-     * @return BelongsToThrough<Country, User|Post, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, \Tests\Models\User|\Tests\Models\Post, $this>
      */
     public function countryWithCustomForeignKeys(): BelongsToThrough
     {
@@ -37,7 +37,7 @@ class Comment extends Model
     }
 
     /**
-     * @return BelongsToThrough<Country, User|Post, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, \Tests\Models\User|\Tests\Models\Post, $this>
      */
     public function countryWithTrashedUser(): BelongsToThrough
     {
@@ -46,7 +46,7 @@ class Comment extends Model
     }
 
     /**
-     * @return BelongsToThrough<Country, User|Post, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, \Tests\Models\User|\Tests\Models\Post, $this>
      */
     public function countryWithPrefix(): BelongsToThrough
     {
@@ -54,18 +54,16 @@ class Comment extends Model
     }
 
     /**
-     * @return BelongsToThrough<self, self, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<self, self, $this>
      */
     public function grandparent(): BelongsToThrough
     {
-        /**
-         * @phpstan-ignore return.type, argument.type, argument.templateType
-         */
+        /* @phpstan-ignore argument.templateType, argument.type, return.type */
         return $this->belongsToThrough(self::class, self::class.' as alias', null, '', [self::class => 'parent_id']);
     }
 
     /**
-     * @return BelongsToThrough<User, Post, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\User, \Tests\Models\Post, $this>
      */
     public function user(): BelongsToThrough
     {

@@ -105,7 +105,7 @@ class BelongsToThroughTest extends TestCase
 
     public function testWithTrashed(): void
     {
-        /** @var User $user */
+        /** @var \Tests\Models\User $user */
         $user = Comment::findOrFail(33)->user()
             ->withTrashed()
             ->first();
@@ -115,7 +115,7 @@ class BelongsToThroughTest extends TestCase
 
     public function testWithTrashedIntermediate(): void
     {
-        /** @var Country $country */
+        /** @var \Tests\Models\Country $country */
         $country = Comment::findOrFail(33)->country()
             ->withTrashed(['users.deleted_at'])
             ->first();
