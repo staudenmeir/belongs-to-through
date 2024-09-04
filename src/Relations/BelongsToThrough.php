@@ -318,11 +318,14 @@ class BelongsToThrough extends Relation
 
         $foreignKey = $from . '.' . $this->getFirstForeignKeyName();
 
-        return $query->select($columns)->whereColumn(
+        /** @var \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query */
+        $query = $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
             '=',
             $foreignKey
         );
+
+        return $query;
     }
 
     /**
