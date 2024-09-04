@@ -15,7 +15,7 @@ class Comment extends Model
     use HasTableAlias;
 
     /**
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, array{0: \Tests\Models\User, 1: \Tests\Models\Post}, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\Models\Country, list<\Tests\Models\User|\Tests\Models\Post>, $this>
      */
     public function country(): BelongsToThrough
     {

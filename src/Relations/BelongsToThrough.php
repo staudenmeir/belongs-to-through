@@ -228,7 +228,11 @@ class BelongsToThrough extends Relation
         return $dictionary;
     }
 
-    /** @inheritDoc */
+    /**
+     * Get the results of the relationship.
+     *
+     * @return TRelatedModel|object|static|null
+     */
     public function getResults()
     {
         return $this->first() ?: $this->getDefaultFor($this->parent);
@@ -237,7 +241,6 @@ class BelongsToThrough extends Relation
     /**
      * Execute the query and get the first result.
      *
-     * @inheritDoc
      * @param string[] $columns
      * @return TRelatedModel|object|static|null
      */
@@ -362,8 +365,6 @@ class BelongsToThrough extends Relation
 
     /**
      * Make a new related instance for the given model.
-     *
-     * @inheritDoc
      *
      * @param \Illuminate\Database\Eloquent\Model $parent
      * @return \Illuminate\Database\Eloquent\Model
