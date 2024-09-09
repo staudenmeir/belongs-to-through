@@ -341,8 +341,7 @@ class BelongsToThrough extends Relation
         $firstThroughParent = end($this->throughParents);
 
         if ($firstThroughParent === false) {
-            // @codeCoverageIgnore
-            throw new RuntimeException('No "through" parent models were specified.');
+            throw new RuntimeException('No "through" parent models were specified.'); // @codeCoverageIgnore
         }
 
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
@@ -358,8 +357,7 @@ class BelongsToThrough extends Relation
         $firstThroughParent = end($this->throughParents);
 
         if ($firstThroughParent === false) {
-            // @codeCoverageIgnore
-            throw new RuntimeException('No "through" parent models were specified.');
+            throw new RuntimeException('No "through" parent models were specified.'); // @codeCoverageIgnore
         }
 
         return $firstThroughParent->qualifyColumn($this->getLocalKeyName($firstThroughParent));
