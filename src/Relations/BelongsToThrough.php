@@ -341,6 +341,7 @@ class BelongsToThrough extends Relation
         $firstThroughParent = end($this->throughParents);
 
         if ($firstThroughParent === false) {
+            // @codeCoverageIgnore
             throw new RuntimeException('No "through" parent models were specified.');
         }
 
@@ -357,6 +358,7 @@ class BelongsToThrough extends Relation
         $firstThroughParent = end($this->throughParents);
 
         if ($firstThroughParent === false) {
+            // @codeCoverageIgnore
             throw new RuntimeException('No "through" parent models were specified.');
         }
 
