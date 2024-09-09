@@ -354,13 +354,13 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
-        $lastThroughParent = end($this->throughParents);
+        $firstThroughParent = end($this->throughParents);
 
-        if ($lastThroughParent === false) {
+        if ($firstThroughParent === false) {
             throw new RuntimeException('No "through" parent models were specified.');
         }
 
-        return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
+        return $firstThroughParent->qualifyColumn($this->getLocalKeyName($firstThroughParent));
     }
 
     /**
