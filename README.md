@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/staudenmeir/belongs-to-through/actions/workflows/ci.yml/badge.svg)](https://github.com/staudenmeir/belongs-to-through/actions/workflows/ci.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/staudenmeir/belongs-to-through/graph/badge.svg?token=Z4KscVFWIE)](https://codecov.io/gh/staudenmeir/belongs-to-through)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%209-brightgreen.svg?style=flat)](https://github.com/staudenmeir/belongs-to-through/actions/workflows/static-analysis.yml?query=branch%3Amain)
 [![Latest Stable Version](https://poser.pugx.org/staudenmeir/belongs-to-through/v/stable)](https://packagist.org/packages/staudenmeir/belongs-to-through)
 [![Total Downloads](https://poser.pugx.org/staudenmeir/belongs-to-through/downloads)](https://packagist.org/packages/staudenmeir/belongs-to-through/stats)
 [![License](https://poser.pugx.org/staudenmeir/belongs-to-through/license)](https://github.com/staudenmeir/belongs-to-through/blob/main/LICENSE)
