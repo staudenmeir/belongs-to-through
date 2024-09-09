@@ -12,15 +12,14 @@ trait BelongsToThrough
      * Define a belongs-to-through relationship.
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
-     * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
      *
      * @param class-string<TRelatedModel> $related
-     * @param class-string<TIntermediateModel>[]|array{0: class-string<TIntermediateModel>, 1: string}[]|class-string<TIntermediateModel> $through
+     * @param class-string<\Illuminate\Database\Eloquent\Model>[]|array{0: class-string<\Illuminate\Database\Eloquent\Model>, 1: string}[]|class-string<\Illuminate\Database\Eloquent\Model> $through
      * @param string|null $localKey
      * @param string $prefix
      * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $foreignKeyLookup
      * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $localKeyLookup
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModel, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, $this>
      */
     public function belongsToThrough(
         $related,
@@ -33,7 +32,7 @@ trait BelongsToThrough
         /** @var TRelatedModel $relatedInstance */
         $relatedInstance = $this->newRelatedInstance($related);
 
-        /** @var TIntermediateModel[] $throughParents */
+        /** @var list<\Illuminate\Database\Eloquent\Model> $throughParents */
         $throughParents  = [];
         $foreignKeys     = [];
 
@@ -44,11 +43,10 @@ trait BelongsToThrough
                 /** @var string $foreignKey */
                 $foreignKey = $model[1];
 
-                /** @var class-string<TIntermediateModel> $model */
+                /** @var class-string<\Illuminate\Database\Eloquent\Model> $model */
                 $model = $model[0];
             }
 
-            /** @var TIntermediateModel $instance */
             $instance = $this->belongsToThroughParentInstance($model);
 
             if ($foreignKey) {
@@ -122,17 +120,16 @@ trait BelongsToThrough
      * Instantiate a new BelongsToThrough relationship.
      *
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
-     * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
      * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param TIntermediateModel[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
      * @param array<string, string> $localKeyLookup
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TIntermediateModel, TDeclaringModel>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, TDeclaringModel>
      */
     protected function newBelongsToThrough(
         Builder $query,

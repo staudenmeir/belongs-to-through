@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
- * @template TIntermediateModel of \Illuminate\Database\Eloquent\Model
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
  * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
@@ -32,7 +32,7 @@ class BelongsToThrough extends Relation
     /**
      * The "through" parent model instances.
      *
-     * @var TIntermediateModel[]
+     * @var list<\Illuminate\Database\Eloquent\Model>
      */
     protected $throughParents;
 
@@ -62,7 +62,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param TIntermediateModel[] $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
@@ -88,11 +88,7 @@ class BelongsToThrough extends Relation
         parent::__construct($query, $parent);
     }
 
-    /**
-     * Set the base constraints on the relation query.
-     *
-     * @return void
-     */
+    /** @inheritDoc */
     public function addConstraints()
     {
         $this->performJoins();
@@ -179,12 +175,7 @@ class BelongsToThrough extends Relation
         return in_array(SoftDeletes::class, class_uses_recursive($model));
     }
 
-    /**
-     * Set the constraints for an eager load of the relation.
-     *
-     * @param array<int, TDeclaringModel> $models
-     * @return void
-     */
+    /** @inheritDoc */
     public function addEagerConstraints(array $models)
     {
         $keys = $this->getKeys($models, $this->getFirstForeignKeyName());
@@ -192,13 +183,7 @@ class BelongsToThrough extends Relation
         $this->query->whereIn($this->getQualifiedFirstLocalKeyName(), $keys);
     }
 
-    /**
-     * Initialize the relation on a set of models.
-     *
-     * @param array<int, TDeclaringModel> $models
-     * @param string $relation
-     * @return array<int, TDeclaringModel>
-     */
+    /** @inheritDoc */
     public function initRelation(array $models, $relation)
     {
         foreach ($models as $model) {
@@ -208,14 +193,7 @@ class BelongsToThrough extends Relation
         return $models;
     }
 
-    /**
-     * Match the eagerly loaded results to their parents.
-     *
-     * @param array<int, TDeclaringModel> $models
-     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
-     * @param string $relation
-     * @return array<int, TDeclaringModel>
-     */
+    /** @inheritDoc */
     public function match(array $models, Collection $results, $relation)
     {
         $dictionary = $this->buildDictionary($results);
@@ -234,8 +212,8 @@ class BelongsToThrough extends Relation
     /**
      * Build model dictionary keyed by the relation's foreign key.
      *
-     * @param \Illuminate\Database\Eloquent\Collection<array-key, \Illuminate\Database\Eloquent\Model> $results
-     * @return \Illuminate\Database\Eloquent\Model[]
+     * @param \Illuminate\Database\Eloquent\Collection<int, TRelatedModel> $results
+     * @return TRelatedModel[]
      */
     protected function buildDictionary(Collection $results)
     {
@@ -275,12 +253,7 @@ class BelongsToThrough extends Relation
         return $this->query->first($columns);
     }
 
-    /**
-     * Execute the query as a "select" statement.
-     *
-     * @param string[] $columns
-     * @return \Illuminate\Database\Eloquent\Collection<array-key, TRelatedModel>
-     */
+    /** @inheritDoc */
     public function get($columns = ['*'])
     {
         $columns = $this->query->getQuery()->columns ? [] : $columns;
@@ -296,14 +269,7 @@ class BelongsToThrough extends Relation
         return $this->query->get();
     }
 
-    /**
-     * Add the constraints for a relationship query.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query
-     * @param \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $parentQuery
-     * @param string[]|mixed $columns
-     * @return \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model>
-     */
+    /** @inheritDoc */
     public function getRelationExistenceQuery(Builder $query, Builder $parentQuery, $columns = ['*'])
     {
         $this->performJoins($query);
@@ -318,7 +284,7 @@ class BelongsToThrough extends Relation
 
         $foreignKey = $from . '.' . $this->getFirstForeignKeyName();
 
-        /** @var \Illuminate\Database\Eloquent\Builder<\Illuminate\Database\Eloquent\Model> $query */
+        /** @var \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query */
         $query = $query->select($columns)->whereColumn(
             $this->getQualifiedFirstLocalKeyName(),
             '=',
@@ -358,7 +324,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the "through" parent model instances.
      *
-     * @return TIntermediateModel[]
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     public function getThroughParents()
     {
@@ -372,8 +338,12 @@ class BelongsToThrough extends Relation
      */
     public function getFirstForeignKeyName()
     {
-        /** @var TIntermediateModel $firstThroughParent */
         $firstThroughParent = end($this->throughParents);
+
+        if ($firstThroughParent === false) {
+            // @codeCoverageIgnore
+            throw new RuntimeException('No "through" parent models were specified.');
+        }
 
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
     }
@@ -385,10 +355,14 @@ class BelongsToThrough extends Relation
      */
     public function getQualifiedFirstLocalKeyName()
     {
-        /** @var TIntermediateModel $lastThroughParent */
-        $lastThroughParent = end($this->throughParents);
+        $firstThroughParent = end($this->throughParents);
 
-        return $lastThroughParent->qualifyColumn($this->getLocalKeyName($lastThroughParent));
+        if ($firstThroughParent === false) {
+            // @codeCoverageIgnore
+            throw new RuntimeException('No "through" parent models were specified.');
+        }
+
+        return $firstThroughParent->qualifyColumn($this->getLocalKeyName($firstThroughParent));
     }
 
     /**
