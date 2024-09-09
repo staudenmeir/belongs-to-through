@@ -14,7 +14,6 @@ use RuntimeException;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
- * @template TIntermediateModels of list<\Illuminate\Database\Eloquent\Model>
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
  *
  * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
@@ -33,7 +32,7 @@ class BelongsToThrough extends Relation
     /**
      * The "through" parent model instances.
      *
-     * @var TIntermediateModels
+     * @var list<\Illuminate\Database\Eloquent\Model>
      */
     protected $throughParents;
 
@@ -63,7 +62,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param TIntermediateModels $throughParents
+     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
@@ -325,7 +324,7 @@ class BelongsToThrough extends Relation
     /**
      * Get the "through" parent model instances.
      *
-     * @return TIntermediateModels
+     * @return list<\Illuminate\Database\Eloquent\Model>
      */
     public function getThroughParents()
     {

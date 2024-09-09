@@ -11,7 +11,7 @@ class Comment extends Model
     use BelongsToThroughTrait;
 
     /**
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\IdeHelper\Models\Country, list<\Tests\IdeHelper\Models\User|\Tests\IdeHelper\Models\Post>, $this>
+     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Tests\IdeHelper\Models\Country, $this>
      */
     public function country(): BelongsToThroughRelation
     {
