@@ -4,12 +4,7 @@ namespace Znck\Eloquent\Traits;
 
 trait HasTableAlias
 {
-    /**
-     * Qualify the given column name by the model's table.
-     *
-     * @param string $column
-     * @return string
-     */
+    /** @inheritDoc */
     public function qualifyColumn($column)
     {
         if (str_contains($column, '.')) {
