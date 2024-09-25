@@ -14,7 +14,7 @@ trait BelongsToThrough
      * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
      *
      * @param class-string<TRelatedModel> $related
-     * @param class-string<\Illuminate\Database\Eloquent\Model>[]|array{0: class-string<\Illuminate\Database\Eloquent\Model>, 1: string}[]|class-string<\Illuminate\Database\Eloquent\Model> $through
+     * @param non-empty-list<class-string<\Illuminate\Database\Eloquent\Model>>|non-empty-list<array{0: class-string<\Illuminate\Database\Eloquent\Model>, 1: string}>|class-string<\Illuminate\Database\Eloquent\Model> $through
      * @param string|null $localKey
      * @param string $prefix
      * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $foreignKeyLookup
@@ -124,7 +124,7 @@ trait BelongsToThrough
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
+     * @param non-empty-list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup

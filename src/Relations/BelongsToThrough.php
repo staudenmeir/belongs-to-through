@@ -32,7 +32,7 @@ class BelongsToThrough extends Relation
     /**
      * The "through" parent model instances.
      *
-     * @var list<\Illuminate\Database\Eloquent\Model>
+     * @var non-empty-list<\Illuminate\Database\Eloquent\Model>
      */
     protected $throughParents;
 
@@ -62,7 +62,7 @@ class BelongsToThrough extends Relation
      *
      * @param \Illuminate\Database\Eloquent\Builder<TRelatedModel> $query
      * @param TDeclaringModel $parent
-     * @param list<\Illuminate\Database\Eloquent\Model> $throughParents
+     * @param non-empty-list<\Illuminate\Database\Eloquent\Model> $throughParents
      * @param string|null $localKey
      * @param string $prefix
      * @param array<string, string> $foreignKeyLookup
@@ -340,10 +340,6 @@ class BelongsToThrough extends Relation
     {
         $firstThroughParent = end($this->throughParents);
 
-        if ($firstThroughParent === false) {
-            throw new RuntimeException('No "through" parent models were specified.'); // @codeCoverageIgnore
-        }
-
         return $this->prefix . $this->getForeignKeyName($firstThroughParent);
     }
 
@@ -355,10 +351,6 @@ class BelongsToThrough extends Relation
     public function getQualifiedFirstLocalKeyName()
     {
         $firstThroughParent = end($this->throughParents);
-
-        if ($firstThroughParent === false) {
-            throw new RuntimeException('No "through" parent models were specified.'); // @codeCoverageIgnore
-        }
 
         return $firstThroughParent->qualifyColumn($this->getLocalKeyName($firstThroughParent));
     }
