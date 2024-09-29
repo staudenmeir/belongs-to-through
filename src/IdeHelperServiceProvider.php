@@ -11,7 +11,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
 {
     public function register(): void
     {
-        /** @var \Illuminate\Contracts\Config\Repository $config */
+        /** @var \Illuminate\Config\Repository $config */
         $config = $this->app->get('config');
 
         $config->set(
@@ -24,7 +24,7 @@ class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProv
     }
 
     /**
-     * @return class-string<\Illuminate\Console\Command>[]
+     * @return list<class-string<\Illuminate\Console\Command>>
      */
     public function provides(): array
     {

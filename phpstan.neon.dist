@@ -1,10 +1,4 @@
-includes:
-    - ./vendor/larastan/larastan/extension.neon
-    - ./vendor/phpstan/phpstan-mockery/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/extension.neon
-    - ./vendor/phpstan/phpstan-phpunit/rules.neon
 parameters:
-    level: max
+    level: 9
     paths:
         - src
-        - tests

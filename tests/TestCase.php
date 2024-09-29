@@ -35,12 +35,7 @@ abstract class TestCase extends Base
         $this->seed();
     }
 
-    /**
-     * Migrate the database.
-     *
-     * @return void
-     */
-    protected function migrate()
+    protected function migrate(): void
     {
         DB::schema()->create('countries', function (Blueprint $table) {
             $table->increments('id');
@@ -80,12 +75,7 @@ abstract class TestCase extends Base
         });
     }
 
-    /**
-     * Seed the database.
-     *
-     * @return void
-     */
-    protected function seed()
+    protected function seed(): void
     {
         Model::unguard();
 

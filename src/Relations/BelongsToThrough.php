@@ -10,13 +10,12 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 /**
  * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
  * @template TDeclaringModel of \Illuminate\Database\Eloquent\Model
- *
- * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel>
+
+ * @extends \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel, TDeclaringModel, ?TRelatedModel>
  */
 class BelongsToThrough extends Relation
 {
@@ -253,7 +252,12 @@ class BelongsToThrough extends Relation
         return $this->query->first($columns);
     }
 
-    /** @inheritDoc */
+    /**
+     * Execute the query as a "select" statement.
+     *
+     * @param list<string> $columns
+     * @return \Illuminate\Database\Eloquent\Collection<int, TRelatedModel>
+     */
     public function get($columns = ['*'])
     {
         $columns = $this->query->getQuery()->columns ? [] : $columns;
