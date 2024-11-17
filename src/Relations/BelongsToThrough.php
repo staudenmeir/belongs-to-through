@@ -119,6 +119,7 @@ class BelongsToThrough extends Relation
             $query->join($model->getTable(), $first, '=', $second);
 
             if ($this->hasSoftDeletes($model)) {
+                /** @var string $column */
                 /** @phpstan-ignore method.notFound */
                 $column = $model->getQualifiedDeletedAtColumn();
 

@@ -2,6 +2,9 @@
 
 namespace Znck\Eloquent\Traits;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait HasTableAlias
 {
     /** @inheritDoc */
