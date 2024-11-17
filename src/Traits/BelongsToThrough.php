@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Znck\Eloquent\Relations\BelongsToThrough as Relation;
 
+/**
+ * @phpstan-ignore trait.unused
+ */
 trait BelongsToThrough
 {
     /**
