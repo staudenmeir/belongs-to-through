@@ -20,8 +20,8 @@ trait BelongsToThrough
      * @param non-empty-list<class-string<\Illuminate\Database\Eloquent\Model>>|non-empty-list<array{0: class-string<\Illuminate\Database\Eloquent\Model>, 1: string}>|class-string<\Illuminate\Database\Eloquent\Model> $through
      * @param string|null $localKey
      * @param string $prefix
-     * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $foreignKeyLookup
-     * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $localKeyLookup
+     * @param array<int, class-string<\Illuminate\Database\Eloquent\Model>, string> $foreignKeyLookup
+     * @param array<int, class-string<\Illuminate\Database\Eloquent\Model>, string> $localKeyLookup
      * @return \Znck\Eloquent\Relations\BelongsToThrough<TRelatedModel, $this>
      */
     public function belongsToThrough(
@@ -77,7 +77,7 @@ trait BelongsToThrough
     /**
      * Map keys to an associative array where the key is the table name and the value is the key from the lookup.
      *
-     * @param array<class-string<\Illuminate\Database\Eloquent\Model>, string> $keyLookup
+     * @param array<int, class-string<\Illuminate\Database\Eloquent\Model>, string> $keyLookup
      * @return array<string, string>
      */
     protected function mapKeys(array $keyLookup): array
