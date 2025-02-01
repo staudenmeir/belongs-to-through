@@ -6,7 +6,6 @@ use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Staudenmeir\BelongsToThrough\IdeHelper\BelongsToThroughRelationsHook;
-use Staudenmeir\EloquentHasManyDeep\IdeHelper\DeepRelationsHook;
 
 class IdeHelperServiceProvider extends ServiceProvider implements DeferrableProvider
 {
