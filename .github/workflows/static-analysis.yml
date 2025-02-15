@@ -1,10 +1,6 @@
 name: Static Analysis
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: workflow_dispatch # TODO[L12]
 
 jobs:
   phpstan:

@@ -14,15 +14,14 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^11.0"
+        "illuminate/database": "^12.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
-        "larastan/larastan": "^3.0",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "mockery/mockery": "^1.5.1",
-        "orchestra/testbench-core": "^9.5",
-        "phpunit/phpunit": "^11.0"
+        "orchestra/testbench-core": "^10.0",
+        "phpunit/phpunit": "^12.0"
     },
     "autoload": {
         "psr-4": {
@@ -39,6 +38,9 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-l12": "2.17.x-dev"
+        },
         "laravel": {
             "providers": [
                 "Staudenmeir\\BelongsToThrough\\IdeHelperServiceProvider"
