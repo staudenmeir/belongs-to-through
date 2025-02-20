@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use ReflectionClass;
 use ReflectionMethod;
-use Throwable;
+use ReflectionNamedType;
 use Znck\Eloquent\Relations\BelongsToThrough as BelongsToThroughRelation;
 use Znck\Eloquent\Traits\BelongsToThrough as BelongsToThroughTrait;
 
@@ -30,13 +30,11 @@ class BelongsToThroughRelationsHook implements ModelHookInterface
                 continue;
             }
 
-            try {
+            if ($method->getReturnType() instanceof ReflectionNamedType
+                && $method->getReturnType()->getName() === BelongsToThroughRelation::class) {
+                /** @var \Illuminate\Database\Eloquent\Relations\Relation<*, *, *> $relationship */
                 $relationship = $method->invoke($model);
-            } catch (Throwable) { // @codeCoverageIgnore
-                continue; // @codeCoverageIgnore
-            }
 
-            if ($relationship instanceof BelongsToThroughRelation) {
                 $this->addRelationship($command, $method, $relationship);
             }
         }
