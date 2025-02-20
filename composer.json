@@ -18,6 +18,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.0",
+        "larastan/larastan": "^3.0",
         "laravel/framework": "^12.0",
         "mockery/mockery": "^1.5.1",
         "orchestra/testbench-core": "^10.0",
@@ -38,9 +39,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-l12": "2.17.x-dev"
-        },
         "laravel": {
             "providers": [
                 "Staudenmeir\\BelongsToThrough\\IdeHelperServiceProvider"
