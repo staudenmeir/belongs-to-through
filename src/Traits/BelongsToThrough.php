@@ -32,8 +32,14 @@ trait BelongsToThrough
         $foreignKeyLookup = [],
         array $localKeyLookup = []
     ) {
+        [$relatedClass, $relatedAlias] = $this->getClassAndAlias($related);
+
         /** @var TRelatedModel $relatedInstance */
-        $relatedInstance = $this->newRelatedInstance($related);
+        $relatedInstance = $this->newRelatedInstance($relatedClass);
+
+        if (isset($relatedAlias)) {
+            $relatedInstance->setTable($relatedInstance->getTable() . ' as ' . $relatedAlias);
+        }
 
         /** @var list<\Illuminate\Database\Eloquent\Model> $throughParents */
         $throughParents  = [];
@@ -106,17 +112,31 @@ trait BelongsToThrough
      */
     protected function belongsToThroughParentInstance($model)
     {
-        /** @var array{0: class-string<TModel>, 1?: string} $segments */
-        $segments = preg_split('/\s+as\s+/i', $model);
+        [$class, $alias] = $this->getClassAndAlias($model);
 
         /** @var TModel $instance */
-        $instance = new $segments[0]();
-
-        if (isset($segments[1])) {
-            $instance->setTable($instance->getTable() . ' as ' . $segments[1]);
+        $instance = new $class();
+        if ($alias) {
+            $instance->setTable($instance->getTable() . ' as ' . $alias);
         }
 
         return $instance;
+    }
+
+    /**
+     * Get the class and alias from a belongs-to-through relationship.
+     *
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param class-string<TModel> $model
+     * @return array{0: class-string<TModel>, 1?: string}
+     */
+    protected function getClassAndAlias($model): array
+    {
+        /** @var array{0: class-string<TModel>, 1?: string} $segments */
+        $segments = preg_split('/\s+as\s+/i', $model);
+
+        return [$segments[0], $segments[1] ?? null];
     }
 
     /**
