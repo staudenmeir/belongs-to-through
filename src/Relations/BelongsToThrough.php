@@ -199,6 +199,7 @@ class BelongsToThrough extends Relation
         $dictionary = $this->buildDictionary($results);
 
         foreach ($models as $model) {
+            /** @var int|string $key */
             $key = $model[$this->getFirstForeignKeyName()];
 
             if (isset($dictionary[$key])) {
@@ -220,7 +221,10 @@ class BelongsToThrough extends Relation
         $dictionary = [];
 
         foreach ($results as $result) {
-            $dictionary[$result[static::THROUGH_KEY]] = $result;
+            /** @var int|string $key */
+            $key = $result[static::THROUGH_KEY];
+
+            $dictionary[$key] = $result;
 
             unset($result[static::THROUGH_KEY]);
         }
