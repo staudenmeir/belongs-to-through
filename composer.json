@@ -14,12 +14,12 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/database": "^12.0"
+        "illuminate/database": "^12.0|^13.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^3.0",
-        "larastan/larastan": "^3.0",
-        "laravel/framework": "^12.0",
+        "barryvdh/laravel-ide-helper": "^3.0|dev-master",
+        "larastan/larastan": "^3.0|dev-l13",
+        "laravel/framework": "^12.0|^13.0",
         "mockery/mockery": "^1.5.1",
         "orchestra/testbench-core": "^10.0",
         "phpunit/phpunit": "^11.0"
