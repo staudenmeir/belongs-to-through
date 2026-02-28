@@ -22,7 +22,7 @@
         "laravel/framework": "^13.0",
         "mockery/mockery": "^1.5.1",
         "orchestra/testbench-core": "^11.0",
-        "phpunit/phpunit": "^13.0"
+        "phpunit/phpunit": "^12.5"
     },
     "autoload": {
         "psr-4": {
