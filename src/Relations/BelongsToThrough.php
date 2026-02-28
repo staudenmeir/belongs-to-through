@@ -199,10 +199,10 @@ class BelongsToThrough extends Relation
         $dictionary = $this->buildDictionary($results);
 
         foreach ($models as $model) {
-            /** @var int|string $key */
+            /** @var int|string|null $key */
             $key = $model[$this->getFirstForeignKeyName()];
 
-            if (isset($dictionary[$key])) {
+            if (!is_null($key) && isset($dictionary[$key])) {
                 $model->setRelation($relation, $dictionary[$key]);
             }
         }
